@@ -184,6 +184,23 @@ Dịch vụ này kết nối **UserService** (người dùng), **DriverService**
 ---
 # ĐẶT XE
 ![ĐẶT XE](Image/Đặtxe.png)
+---
+
+## ⚡ Tại sao chọn WebSocket cho TripService
+
+WebSocket được chọn để hỗ trợ giao tiếp **hai chiều (bi-directional)** giữa server và client theo **thời gian thực**.
+
+### 🚖 1. Đặc thù của TripService
+TripService là trung tâm điều phối giữa:
+- 🧍‍♂️ **Người dùng (User)**: tạo và theo dõi chuyến đi  
+- 🚗 **Tài xế (Driver)**: nhận cuốc, cập nhật trạng thái và vị trí  
+
+Hệ thống cần cập nhật **liên tục**:
+- Khi tài xế **nhận cuốc**, người dùng thấy ngay  
+- Khi người dùng **hủy**, tài xế biết ngay  
+- Khi tài xế **di chuyển**, vị trí được cập nhật real-time  
+
+---
 ### ⚙️ 1.3 Nguyên tắc Thiết kế
 
 #### 🛰️ Giao tiếp giữa các Service
