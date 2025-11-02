@@ -56,7 +56,35 @@ Tất cả request từ client (mobile app, web app) đều **đi qua Gateway** 
 | 💻 **Development** | Nginx Gateway hoặc Spring Cloud Gateway |
 
 ---
+## 🔎 Discovery Service
 
+**Discovery Service** chịu trách nhiệm **quản lý và định vị động (dynamic discovery)** các microservices trong hệ thống.  
+Thay vì phải cấu hình thủ công địa chỉ IP hoặc hostname, các service sẽ **đăng ký (register)** và **tra cứu (discover)** lẫn nhau thông qua Discovery Service.
+
+---
+
+### ⚙️ Chức năng chính
+- 🧭 **Service Registration:** Khi một microservice khởi động, nó tự động đăng ký thông tin (tên service, địa chỉ, cổng) vào Discovery Service.  
+- 📡 **Service Lookup:** Các service khác có thể truy vấn để lấy thông tin endpoint hiện tại của service mục tiêu.  
+- 🔁 **Dynamic Scaling:** Khi service scale-out (thêm instance mới), Discovery Service tự động cập nhật danh sách node.  
+- 💥 **Health Check:** Theo dõi tình trạng hoạt động (health status) của từng instance và loại bỏ các node hỏng.
+
+---
+
+### 🎯 Vai trò trong kiến trúc
+- Loại bỏ sự phụ thuộc vào **cấu hình tĩnh (hardcoded endpoint)**.  
+- Giúp hệ thống **linh hoạt, tự phục hồi**, và dễ dàng **mở rộng ngang (horizontal scaling)**.  
+- Cung cấp nền tảng cho các cơ chế **load balancing thông minh** tại API Gateway hoặc giữa các service với nhau.
+
+---
+
+### 🚀 Triển khai
+| Môi trường | Công nghệ sử dụng |
+|-------------|------------------|
+| 🏭 **Production** | AWS Cloud Map hoặc HashiCorp Consul |
+| 💻 **Development** | Netflix Eureka (Spring Cloud Netflix) hoặc Consul local mode |
+
+---
 #### 👤 UserService
 - **Trách nhiệm:**  
   - Quản lý thông tin người dùng (hành khách & tài xế).  
