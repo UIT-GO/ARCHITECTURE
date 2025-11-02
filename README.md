@@ -202,6 +202,7 @@ Dịch vụ này kết nối **AuthService** (người dùng), **DriverService**
 # Infrastructure Architecture (AWS)
 
 ### Terraform Infrastructure as Code
+#### Nơi cập nhật: https://github.com/UIT-GO/IaC
 Located in `IaC/terraform/` directory with the following structure:
 
 #### Core Infrastructure Components:
