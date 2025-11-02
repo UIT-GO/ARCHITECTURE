@@ -388,6 +388,7 @@ services:
 | IaC | Terraform |
 
 ---
+# Testing Strategy
 
 📘 **Tác giả:** UIT-Go Team  
 📅 **Phiên bản:** Giai đoạn 1 – “Bộ Xương”  
