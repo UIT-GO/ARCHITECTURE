@@ -102,7 +102,7 @@ Thay vì phải cấu hình thủ công địa chỉ IP hoặc hostname, các se
 - **Database:** PostgreSQL (hoặc MySQL tùy môi trường).  
 - **ORM:** Sử dụng JPA/Hibernate để ánh xạ bảng dữ liệu.  
 - **Mô hình dữ liệu chính:**  
-
+![User Table](Image/USER.png)
 ---
 
 #### 🚗 DriverService
