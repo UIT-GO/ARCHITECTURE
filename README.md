@@ -230,7 +230,7 @@ Hệ thống cần cập nhật **liên tục**:
 - Khi tài xế **nhận cuốc**, người dùng thấy ngay  
 - Khi người dùng **hủy**, tài xế biết ngay  
 - Khi tài xế **di chuyển**, vị trí được cập nhật real-time  
-## Infrastructure Architecture (AWS)
+# Infrastructure Architecture (AWS)
 
 ### Terraform Infrastructure as Code
 Located in `IaC/terraform/` directory with the following structure:
