@@ -251,3 +251,65 @@ TripService quản lý **vòng đời của một cuốc xe**. Một cuốc xe l
   - Logic: Tải "ghi" được phân tán ra nhiều **shard**, cho phép **scale ngang gần như vô hạn**.
 - **Tuning phụ: Tối ưu Indexes**
   - Đảm bảo tất cả các trường dùng để truy vấn (`status`, `driver_id`) đều được **index**, tăng tốc tìm kiếm và lọc document.
+---
+# Lựa chọn Giao thức Giao tiếp: REST API (Giai đoạn "Bộ Xương")
+
+## 1. Phân tích và Bảo vệ Lựa chọn Kiến trúc
+
+### Phân tích (Nhiệm vụ)
+Cần một cơ chế **giao tiếp service-to-service** cho 3 services "bộ xương" (UserService, TripService, DriverService) để chúng có thể gọi API lẫn nhau.
+
+### Lựa chọn đã cân nhắc
+- **gRPC:** Hiệu năng cao, băng thông thấp (dùng Protobuf), phù hợp "hyper-scale".
+- **REST API:** Phổ biến, đơn giản, dễ debug (dùng JSON).
+
+### Bảo vệ Quyết định (Chọn REST API)
+Chúng em chọn **REST API** cho giai đoạn "bộ xương" ban đầu vì:
+
+1. **Tốc độ phát triển (Development Speed) và Tính đơn giản (Simplicity)**:
+   - REST sử dụng JSON, **human-readable**, dễ debug với Postman hoặc curl.
+2. **REST phù hợp triển khai bước đầu**:
+   - API chưa ổn định, gRPC cần `.proto` và code generation sẽ làm chậm tiến độ.
+
+### Trade-off (Đánh đổi)
+- REST có **độ trễ (latency) cao hơn** và **tốn băng thông** hơn gRPC.
+- Chấp nhận **"nợ kỹ thuật" (technical debt)** về hiệu năng ở Giai đoạn 1 để hoàn thành "bộ xương" nhanh.
+- Vấn đề hiệu năng sẽ được giải quyết ở Giai đoạn 2 bằng **migrate hot paths sang gRPC**.
+
+---
+
+## 2. Kiểm chứng Thiết kế bằng Load Testing
+
+### Mục tiêu
+Đo lường **cái giá** của việc dùng REST trong giao tiếp service-to-service.
+
+### Kịch bản (k6)
+- Mô phỏng **TripService gọi UserService** **1.000 lần/giây**.
+
+### Metrics cần theo dõi
+1. **P99 Latency:** Độ trễ của cuộc gọi nội bộ (chắc chắn cao hơn gRPC, ví dụ 50ms so với 5ms).
+2. **Network Throughput:** Lượng dữ liệu (bytes) truyền tải (JSON tốn băng thông hơn Protobuf).
+3. **RPS (Requests Per Second):** Giới hạn RPS trước khi latency tăng vọt.
+
+---
+
+## 3. Hiện thực hóa các Kỹ thuật Tối ưu hóa (Tuning)
+
+### Vấn đề
+- Load Test chứng minh **REST API là điểm nghẽn** khi hệ thống scale cao:
+  - Độ trễ tăng
+  - Chi phí mạng cao
+
+### Giải pháp (Tuning)
+- **Di chuyển các hot paths từ REST sang gRPC** một cách có chủ đích.
+
+### Hiện thực
+- Không di chuyển toàn bộ, chỉ **tập trung các luồng quan trọng**:
+  - **Luồng Cập nhật vị trí** (write-heavy, cần Protobuf để giảm size)
+  - **Luồng Tìm kiếm tài xế** (read-heavy, cần gRPC để giảm latency)
+
+### Kết quả
+- Giảm đáng kể **độ trễ** và **chi phí mạng**.
+- Cho phép hệ thống đáp ứng yêu cầu **hyper-scale** của Module A.
+- REST ban đầu cho phép chúng em **dựa trên dữ liệu Load Test để quyết định tối ưu**, thay vì tối ưu sớm không cần thiết.
+
