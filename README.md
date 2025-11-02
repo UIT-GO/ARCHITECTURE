@@ -106,15 +106,40 @@ Thay vì phải cấu hình thủ công địa chỉ IP hoặc hostname, các se
 ![User Table](Image/USER.png)
 ---
 
-#### 🚗 DriverService
-- **Trách nhiệm:**  
-  - Theo dõi vị trí tài xế theo thời gian thực.  
-  - Quản lý trạng thái (online/offline, đang rảnh, đang chở khách).  
-  - Cung cấp API tìm kiếm tài xế gần nhất theo vị trí (5km).  
-- **Cơ sở dữ liệu:**  
-  - Redis (ElastiCache) với **GEO Commands** — ưu tiên tốc độ.  
-  - Hoặc DynamoDB với **Geohash** — ưu tiên khả năng mở rộng.  
-- **Event Listener:** Nhận event `CreateTripEvent` từ Kafka, tìm tài xế phù hợp, phát `AcceptTripEvent`.
+# 🚖 Driver Service
+
+## 📘 Mô tả
+`DriverService` là microservice chịu trách nhiệm **quản lý thông tin tài xế**, **vị trí thời gian thực**, và **xử lý các sự kiện liên quan đến cuốc xe** được gửi từ `TripService`.  
+Dịch vụ này là thành phần trung tâm trong luồng định vị và điều phối tài xế của hệ thống **UIT-Go**.
+
+---
+
+## ⚙️ Chức năng chính
+
+- 📋 **Quản lý thông tin tài xế:**  
+  Lưu trữ thông tin tài xế, phương tiện, trạng thái (online/offline/on-trip) trong **MongoDB**.
+
+- 🛰️ **Theo dõi vị trí thời gian thực:**  
+  Nhận dữ liệu vị trí của tài xế từ ứng dụng di động qua RESTful API và lưu vào **Redis (Geospatial)** để phục vụ truy vấn nhanh.
+
+- 🧭 **Tìm kiếm tài xế gần nhất:**  
+  Khi nhận sự kiện `CreateTripEvent` từ `TripService`, `DriverService` sẽ tìm các tài xế trong bán kính 5km quanh điểm đón khách và gửi thông tin cuốc xe cho họ.
+
+- 💬 **Lắng nghe và phản hồi sự kiện:**  
+  Nhận **Kafka event** từ `TripService` (ví dụ: `trip_created`) và phản hồi lại qua event `trip_accepted` hoặc `trip_timeout`.
+
+---
+
+## 🧱 Kiến trúc & Thành phần
+
+| Thành phần | Mô tả |
+|-------------|--------|
+| **Ngôn ngữ** | Java (Spring Boot) |
+| **Database chính** | MongoDB – lưu hồ sơ tài xế |
+| **Cache/GeoStore** | Redis (Geospatial) – lưu vị trí tài xế |
+| **Message Broker** | Kafka – nhận và phát sự kiện |
+| **API kiểu** | RESTful API (đồng bộ) + Event-driven (bất đồng bộ) |
+| **Triển khai** | Docker container, giao tiếp nội bộ qua mạng service discovery |
 
 ---
 
