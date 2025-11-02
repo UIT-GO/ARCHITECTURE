@@ -141,5 +141,40 @@ Hệ thống cần cập nhật **liên tục**:
 - Khi người dùng **hủy**, tài xế biết ngay  
 - Khi tài xế **di chuyển**, vị trí được cập nhật real-time  
 
+---
+
+# 🛡️ AuthService (Auth) → PostgreSQL (CSDL Quan hệ)
+
+## Trách nhiệm của Service
+- Quản lý thông tin người dùng.
+- Xử lý đăng ký, đăng nhập.
+- Quản lý hồ sơ (profiles).
+
+## Loại dữ liệu
+- Dữ liệu có cấu trúc (structured) và quan hệ (relational) cao.
+- Một User có một Profile.
+- Một User có thông tin Credentials (tên đăng nhập, mật khẩu đã hash).
+- Dữ liệu phải được **nhất quán**.
+
+## Lý do chọn PostgreSQL
+
+### 1. Tính nhất quán mạnh (Strong Consistency - ACID)
+- Đây là yêu cầu bắt buộc cho dịch vụ xác thực.
+- Ví dụ: Khi người dùng đổi mật khẩu, phải đảm bảo lần đăng nhập tiếp theo sử dụng mật khẩu mới.
+- Không thể chấp nhận **eventual consistency** trong trường hợp này.
+
+### 2. Toàn vẹn Dữ liệu (Data Integrity)
+- PostgreSQL cho phép sử dụng **constraints** và **foreign keys**.
+- Đảm bảo dữ liệu luôn sạch và đúng.
+- Ví dụ: Không thể tạo hồ sơ (profile) cho một `user_id` không tồn tại.
+
+### 3. Giao dịch (Transactions)
+- Khi đăng ký, có thể cần thực hiện nhiều thao tác:
+  - Tạo record `user`.
+  - Tạo record `profile`.
+- Transactions đảm bảo **tất cả hoặc không gì cả**.
+
+## Kết luận
+- PostgreSQL được chọn vì **UserService ưu tiên tính nhất quán và toàn vẹn dữ liệu** hơn tốc độ ghi hay sự linh hoạt.
 
 
