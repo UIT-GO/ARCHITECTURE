@@ -187,7 +187,7 @@ Dịch vụ này kết nối **UserService** (người dùng), **DriverService**
 ---
 # ⚙️ Nguyên tắc Gửi Dữ liệu vị trí của Driver
 ![Cập nhật vị trí](Image/logiccapnhatvitri.png)
-Ứng dụng **chỉ gửi vị trí mới** lên `DriverService` khi **một trong hai điều kiện sau** được thỏa mãn:
+|Ứng dụng **chỉ gửi vị trí mới** lên `DriverService` khi **một trong hai điều kiện sau** được thỏa mãn:
 
 1. **Đã trôi qua hơn 3–5 giây** kể từ lần gửi cuối  
 2. **Hoặc** tài xế đã di chuyển **hơn 10–20 mét** so với vị trí trước đó  
