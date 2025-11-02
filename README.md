@@ -183,7 +183,7 @@ Dịch vụ này kết nối **UserService** (người dùng), **DriverService**
 
 ---
 # ĐẶT XE
-![ĐẶT XE](Image/Đặt_xe.png)
+![ĐẶT XE](Image/Đặtxe.png)
 ### ⚙️ 1.3 Nguyên tắc Thiết kế
 
 #### 🛰️ Giao tiếp giữa các Service
