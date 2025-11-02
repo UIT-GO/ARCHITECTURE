@@ -102,7 +102,7 @@ Located in `IaC/terraform/` directory with the following structure:
 - Logging and error handling
 - Service health monitoring
 
-### 🧩 1.2 Mô tả Thành phần
+## 🧩 1.2 Mô tả Thành phần
 
 # 🧭 API Gateway
 
