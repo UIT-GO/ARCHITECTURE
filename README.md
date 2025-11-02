@@ -12,8 +12,7 @@ Giai đoạn này tập trung xây dựng nền tảng **core system** gồm 3 m
 
 ### 📊 1.1 Sơ đồ Kiến trúc
 
-> *(Bạn có thể chèn hình minh họa tại đây — ví dụ: `docs/architecture-overview.png`)*
-
+![Architecture Diagram](image/basic.png)
 Sơ đồ cần thể hiện:
 - Application Load Balancer (ALB)
 - UserService
