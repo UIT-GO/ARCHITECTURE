@@ -1,154 +1,262 @@
 # 🏗️ UIT-Go System Architecture
 
-Tài liệu này trình bày **kiến trúc hệ thống tổng quan** và **kiến trúc chi tiết cho các module** của dự án **UIT-Go** — hệ thống đặt xe thời gian thực theo mô hình Microservice.  
-
-Use case triển khai có trong folder `Image`.
-
-
----
+Tài liệu này trình bày **kiến trúc hệ thống tổng quan** và **kiến trúc chi tiết cho các module** của dự án **UIT-Go** — hệ thống đặt xe thời gian thực theo mô hình Microservice. Use case triển khai có trong folder Image.
+# 🗂️ Mục lục – UIT-Go System Architecture
 
 ## 1. Giới thiệu
-
-### 1.2 Giai đoạn 1: “Bộ Xương”
-
-🚀 Giai đoạn này tập trung xây dựng nền tảng **core system** gồm 3 microservices cơ bản và các thành phần hạ tầng tối thiểu.
-
----
+- 1.1 Mục đích tài liệu
+- 1.2 Giai đoạn 1: “Bộ Xương”
 
 ## 2. Kiến trúc tổng quan
-
-### 2.1 Sơ đồ kiến trúc
-
-Sơ đồ thể hiện:  
-
-- API Gateway, Discovery Service  
-- Auth Service  
-- Trip Service  
-- Driver Service  
-- Kafka (hoặc SQS, RabbitMQ) cho giao tiếp sự kiện  
-- Redis / PostgreSQL / MongoDB làm backend cho từng service  
-
-**Các giao tiếp sử dụng:** REST API, HTTP/HTTPS, WebSocket  
-
----
+- 2.1 Sơ đồ kiến trúc
+- 2.2 Thành phần hệ thống
 
 ## 3. Microservices chính
+### 3.1 API Gateway
+- Chức năng
+- Vai trò trong kiến trúc
+- Triển khai
 
-### 3.1 🧭 API Gateway
+### 3.2 Discovery Service
+- Chức năng
+- Vai trò trong kiến trúc
+- Triển khai
 
-**API Gateway** là điểm vào duy nhất (entry point) của toàn bộ hệ thống microservices.  
+### 3.3 Auth Service
+- Mô tả
+- Chức năng chính
+- Kiến trúc & cơ sở dữ liệu
 
-**Chức năng chính:**
+### 3.4 Driver Service
+- Mô tả
+- Chức năng chính
+- Kiến trúc & thành phần
 
-- 🔀 **Routing**: Định tuyến request đến đúng microservice.  
-- 🔒 **Authentication & Authorization**: Kiểm tra token và phân quyền truy cập.  
-- 🛡️ **Security Layer**: Che giấu cấu trúc hệ thống nội bộ, tăng cường bảo mật.  
+### 3.5 Trip Service
+- Mô tả
+- Chức năng chính
+- Kiến trúc & thành phần
 
-**Vai trò trong kiến trúc:**
+## 4. Hạ tầng & triển khai
+### 4.1 Infrastructure Architecture (AWS)
+- Container Registry (ECR)
+- Compute Resources (EC2)
+- Networking (VPC, Security Groups, Subnet)
+- IAM Security
 
-- Đơn giản hóa giao tiếp client ↔ backend  
-- Tăng bảo mật, dễ quản lý, mở rộng  
-- Hỗ trợ load balancing, caching và fallback  
+### 4.2 Terraform Infrastructure as Code
+- Cấu trúc file: main.tf, variables.tf, outputs.tf, terraform.tfvars
+- Deployment Automation (user_data.sh)
 
-**Triển khai:**
+## 5. Kiến trúc dữ liệu
+- 5.1 PostgreSQL (Auth Service)
+- 5.2 MongoDB (Driver & Trip Services)
+- 5.3 Redis (Caching Layer)
 
+## 6. Kiến trúc messaging
+- 6.1 Apache Kafka
+  - Event Flow giữa các service
+
+## 7. Containerization & Orchestration
+- 7.1 Docker Configuration
+- 7.2 Docker Compose
+- 7.3 Container Registry (ECR)
+
+## 8. Nguyên tắc thiết kế
+- 8.1 Giao tiếp giữa các service (gRPC & REST)
+- 8.2 Database per Service
+- 8.3 Containerization
+- 8.4 Infrastructure as Code (IaC)
+- 8.5 Triển khai & CI/CD
+
+## 9. Event Flow tổng quan
+- Tóm tắt luồng xử lý trip: PENDING → ASSIGNED → ONGOING → COMPLETED
+
+## 10. Công nghệ sử dụng
+- Backend, Communication, Messaging, Databases, Container, Cloud, IaC
+
+## 11. Testing Strategy
+- Test coverage AuthService, TripService, DriverService
+
+## 12. Tác giả & Phiên bản
+- Tác giả, Phiên bản, Trạng thái hiện tại
+
+---
+
+## 🚀 1. Kiến trúc Tổng quan (Giai đoạn 1: “Bộ Xương”)
+
+Giai đoạn này tập trung xây dựng nền tảng **core system** gồm 3 microservices cơ bản và các thành phần hạ tầng tối thiểu.
+
+---
+
+## 📊 1.1 Sơ đồ Kiến trúc
+
+![Architecture Diagram](Image/BASIC.png)
+Sơ đồ thể hiện:
+- API GATEWAY, Discovery Service
+- AuthService
+- TripService
+- DriverService
+- Kafka (hoặc SQS, RabbitMQ) cho giao tiếp sự kiện
+- Redis / PostgreSQL / MongoDB làm backend cho từng service
+- Các giao tiếp sử dụng: RestAPI, HTTP/HTTPS, WEBSOCKET
+
+## 🧩 1.2 Mô tả Thành phần
+
+# 🧭 API Gateway
+
+**API Gateway** là **điểm vào duy nhất (entry point)** của toàn bộ hệ thống microservices.  
+Tất cả request từ client (mobile app, web app) đều **đi qua Gateway** trước khi đến các service nội bộ như `auth-service`, `trip-service`, `driver-service`, ...
+
+---
+
+### ⚙️ Chức năng chính
+- 🔀 **Routing:** Định tuyến request đến đúng microservice tương ứng.  
+- 🔒 **Authentication & Authorization:** Kiểm tra token và phân quyền truy cập.  
+- 🛡️ **Security Layer:** Che giấu cấu trúc hệ thống nội bộ, tăng cường bảo mật.
+
+---
+
+### 🎯 Vai trò trong kiến trúc
+- Đơn giản hóa giao tiếp giữa client và hệ thống backend.  
+- Tăng **tính bảo mật**, **dễ quản lý**, và **dễ mở rộng** khi thêm service mới.  
+- Hỗ trợ **load balancing**, **caching** và **fallback** khi có service gặp sự cố.
+
+---
+
+### 🚀 Triển khai
 | Môi trường | Công nghệ sử dụng |
-|------------|-----------------|
-| Production | AWS ALB hoặc AWS API Gateway |
-| Development | Nginx Gateway hoặc Spring Cloud Gateway |
+|-------------|------------------|
+| 🏭 **Production** | AWS Application Load Balancer (ALB) hoặc AWS API Gateway |
+| 💻 **Development** | Nginx Gateway hoặc Spring Cloud Gateway |
+
+---
+# 🔎 Discovery Service
+
+**Discovery Service** chịu trách nhiệm **quản lý và định vị động (dynamic discovery)** các microservices trong hệ thống.  
+Thay vì phải cấu hình thủ công địa chỉ IP hoặc hostname, các service sẽ **đăng ký (register)** và **tra cứu (discover)** lẫn nhau thông qua Discovery Service.
 
 ---
 
-### 3.2 🔎 Discovery Service
+### ⚙️ Chức năng chính
+- 🧭 **Service Registration:** Khi một microservice khởi động, nó tự động đăng ký thông tin (tên service, địa chỉ, cổng) vào Discovery Service.  
+- 📡 **Service Lookup:** Các service khác có thể truy vấn để lấy thông tin endpoint hiện tại của service mục tiêu.  
+- 🔁 **Dynamic Scaling:** Khi service scale-out (thêm instance mới), Discovery Service tự động cập nhật danh sách node.
 
-**Discovery Service** chịu trách nhiệm quản lý và định vị động các microservices.  
+---
 
-**Chức năng chính:**
+### 🎯 Vai trò trong kiến trúc
+- Loại bỏ sự phụ thuộc vào **cấu hình tĩnh (hardcoded endpoint)**.  
+- Giúp hệ thống **linh hoạt, tự phục hồi**, và dễ dàng **mở rộng ngang (horizontal scaling)**.  
+- Cung cấp nền tảng cho các cơ chế **load balancing thông minh** tại API Gateway hoặc giữa các service với nhau.
 
-- 🧭 **Service Registration**: Tự động đăng ký thông tin service khi khởi động  
-- 📡 **Service Lookup**: Truy vấn thông tin endpoint hiện tại  
-- 🔁 **Dynamic Scaling**: Cập nhật danh sách node khi scale-out  
+---
 
-**Vai trò trong kiến trúc:**
-
-- Loại bỏ phụ thuộc vào hardcoded endpoint  
-- Hỗ trợ tự phục hồi và mở rộng ngang  
-- Nền tảng cho load balancing thông minh  
-
-**Triển khai:**
-
+### 🚀 Triển khai
 | Môi trường | Công nghệ sử dụng |
-|------------|-----------------|
-| Production | AWS Cloud Map hoặc HashiCorp Consul |
-| Development | Netflix Eureka (Spring Cloud Netflix) hoặc Consul local mode |
+|-------------|------------------|
+| 🏭 **Production** | AWS Cloud Map hoặc HashiCorp Consul |
+| 💻 **Development** | Netflix Eureka (Spring Cloud Netflix) hoặc Consul local mode |
+
+---
+# 👤 Auth Service
+
+**User Service** chịu trách nhiệm quản lý thông tin người dùng trong hệ thống UIT-Go, bao gồm **hành khách (User)** và **tài xế (Driver)**.  
+Đây là điểm đầu tiên mà mọi người dùng tương tác — từ **đăng ký, đăng nhập** cho đến **quản lý hồ sơ cá nhân**.
 
 ---
 
-### 3.3 👤 Auth Service
-
-**Auth Service** quản lý thông tin người dùng (hành khách, tài xế).  
-
-**Chức năng chính:**
-
-- 📝 **Đăng ký (Sign Up)**  
-- 🔐 **Đăng nhập (Sign In)**: Sinh JWT Access Token & Refresh Token, lưu Redis  
-- ♻️ **Làm mới token**  
-- 🧾 **Quản lý hồ sơ**  
-- 🧭 **Phân quyền** (ROLE_USER, ROLE_DRIVER)  
-- 💬 **Cung cấp thông tin cho các service khác**  
-
-**Kiến trúc & Cơ sở dữ liệu:** PostgreSQL (hoặc MySQL), ORM: JPA/Hibernate  
+### ⚙️ Chức năng chính
+- 📝 **Đăng ký (Sign Up):** Người dùng có thể tạo tài khoản mới (hành khách hoặc tài xế).  
+- 🔐 **Đăng nhập (Sign In):** Sinh **JWT Access Token** và **Refresh Token**, quản lý vòng đời token qua Redis.  
+- ♻️ **Làm mới token (Token Refresh):** Cung cấp endpoint để cấp lại Access Token khi Refresh Token hợp lệ.  
+- 🧾 **Quản lý hồ sơ:** Cập nhật thông tin cá nhân, địa chỉ, email, và loại tài khoản.  
+- 🧭 **Phân quyền:** Xác định vai trò (`ROLE_USER`, `ROLE_DRIVER`) để kiểm soát quyền truy cập API.  
+- 💬 **Cung cấp thông tin cho các service khác:** Ví dụ `TripService` cần thông tin hành khách, hoặc `DriverService` cần xác minh hồ sơ tài xế.
 
 ---
 
-### 3.4 🚖 Driver Service
+### 🧱 Kiến trúc & Cơ sở dữ liệu
+- **Database:** PostgreSQL (hoặc MySQL tùy môi trường).  
+- **ORM:** Sử dụng JPA/Hibernate để ánh xạ bảng dữ liệu.  
+- **Mô hình dữ liệu chính:**  
+![User Table](Image/USER.png)
+---
 
-**Driver Service** quản lý tài xế, vị trí thời gian thực, xử lý sự kiện liên quan cuốc xe.  
+# 🚖 Driver Service
 
-**Chức năng chính:**
+## 📘 Mô tả
+`DriverService` là microservice chịu trách nhiệm **quản lý thông tin tài xế**, **vị trí thời gian thực**, và **xử lý các sự kiện liên quan đến cuốc xe** được gửi từ `TripService`.  
+Dịch vụ này là thành phần trung tâm trong luồng định vị và điều phối tài xế của hệ thống **UIT-Go**.
 
-- 📋 **Quản lý thông tin tài xế**  
-- 🛰️ **Theo dõi vị trí thời gian thực** (Redis Geospatial)  
-- 🧭 **Tìm kiếm tài xế gần nhất** (bán kính 5km)  
-- 💬 **Lắng nghe & phản hồi sự kiện** (Kafka Event)  
+---
 
-**Kiến trúc & Thành phần:**
+## ⚙️ Chức năng chính
+
+- 📋 **Quản lý thông tin tài xế:**  
+  Lưu trữ thông tin tài xế, phương tiện, trạng thái (online/offline/on-trip) trong **MongoDB**.
+
+- 🛰️ **Theo dõi vị trí thời gian thực:**  
+  Nhận dữ liệu vị trí của tài xế từ ứng dụng di động qua RESTful API và lưu vào **Redis (Geospatial)** để phục vụ truy vấn nhanh.
+
+- 🧭 **Tìm kiếm tài xế gần nhất:**  
+  Khi nhận sự kiện `CreateTripEvent` từ `TripService`, `DriverService` sẽ tìm các tài xế trong bán kính 5km quanh điểm đón khách và gửi thông tin cuốc xe cho họ.
+
+- 💬 **Lắng nghe và phản hồi sự kiện:**  
+  Nhận **Kafka event** từ `TripService` (ví dụ: `trip_created`) và phản hồi lại qua event `trip_accepted` hoặc `trip_timeout`.
+
+---
+
+## 🧱 Kiến trúc & Thành phần
 
 | Thành phần | Mô tả |
-|------------|-------|
-| Ngôn ngữ | Java (Spring Boot) |
-| Database chính | MongoDB |
-| Cache/GeoStore | Redis (Geospatial) |
-| Message Broker | Kafka |
-| API | RESTful + Event-driven |
-| Triển khai | Docker container, giao tiếp qua service discovery |
+|-------------|--------|
+| **Ngôn ngữ** | Java (Spring Boot) |
+| **Database chính** | MongoDB – lưu hồ sơ tài xế |
+| **Cache/GeoStore** | Redis (Geospatial) – lưu vị trí tài xế |
+| **Message Broker** | Kafka – nhận và phát sự kiện |
+| **API kiểu** | RESTful API (đồng bộ) + Event-driven (bất đồng bộ) |
+| **Triển khai** | Docker container, giao tiếp nội bộ qua mạng service discovery |
 
 ---
 
-### 3.5 🚘 Trip Service
+# 🚘 Trip Service
 
-**Trip Service** quản lý vòng đời cuốc xe.  
+## 📘 Mô tả
+`TripService` là **trung tâm điều phối** trong hệ thống **UIT-Go**, chịu trách nhiệm quản lý **vòng đời của cuốc xe (Trip Lifecycle)** — từ khi người dùng đặt xe cho đến khi chuyến đi hoàn tất.  
+Dịch vụ này kết nối **AuthService** (người dùng), **DriverService** (tài xế), và hệ thống **Kafka Event Bus** để đảm bảo luồng xử lý phi đồng bộ, mở rộng linh hoạt và phản hồi nhanh.
 
-**Chức năng chính:**
+---
 
-- 📍 **Tạo cuốc xe mới**  
-- 🔄 **Phát event "trip_created" đến Kafka**  
-- 🚕 **Nhận event "trip_accepted" từ DriverService**  
-- 🧾 **Quản lý vòng đời chuyến đi** (PENDING → ACCEPTED → ONGOING → COMPLETED / CANCELED)  
-- 💬 **Gửi thông báo cập nhật trạng thái**  
+## ⚙️ Chức năng chính
 
-**Kiến trúc & Thành phần:**
+- 📍 **Tạo cuốc xe mới:**  
+  Tiếp nhận yêu cầu đặt xe từ người dùng (qua RESTful API).  
+
+- 🔄 **Phát sự kiện "trip_created"** đến Kafka:  
+  Để DriverService xử lý việc tìm tài xế phù hợp (trong bán kính 5km).  
+
+- 🚕 **Nhận sự kiện "trip_accepted"** từ DriverService:  
+  Cập nhật thông tin tài xế vào cuốc xe.  
+
+- 🧾 **Quản lý vòng đời chuyến đi:**  
+  Theo dõi các trạng thái: `PENDING → ACCEPTED → ONGOING → COMPLETED / CANCELED`.
+
+- 💬 **Gửi thông báo cập nhật trạng thái:**  
+  Gửi phản hồi về cho người dùng và tài xế khi có thay đổi.
+
+---
+
+## 🧱 Kiến trúc & Thành phần
 
 | Thành phần | Mô tả |
-|------------|-------|
-| Ngôn ngữ | Java (Spring Boot) |
-| Database | MongoDB |
-| Message Broker | Kafka |
-| API | RESTful API (Client ↔ TripService) |
-| Triển khai | Docker container |
-| Giao tiếp nội bộ | Kafka Event Bus |
-
----
+|-------------|--------|
+| **Ngôn ngữ** | Java (Spring Boot) |
+| **Database** | MongoDB – lưu thông tin cuốc xe |
+| **Message Broker** | Kafka – trung gian giao tiếp sự kiện giữa Trip và Driver |
+| **API kiểu** | RESTful API (Client ↔ TripService) |
+| **Triển khai** | Docker container |
+| **Giao tiếp nội bộ** | Kafka Event Bus (bất đồng bộ) |
 
 ---
 
