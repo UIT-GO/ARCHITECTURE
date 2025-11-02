@@ -1,6 +1,6 @@
 # Module A: Thiết kế Kiến trúc cho Scalability & Performance
 
-## Use Case 1: Đặt xe (Booking)
+## 1. Use Case 1: Đặt xe (Booking)
 
 ### 1. Phân tích và Bảo vệ Lựa chọn Kiến trúc
 
@@ -49,7 +49,7 @@
 # ĐẶT XE
 ![ĐẶT XE](Image/Đặtxe.png)
 ---
-## Use Case 2: Cập nhật vị trí của Driver
+## 2. Use Case 2: Cập nhật vị trí của Driver
 
 ### 1. Phân tích và Bảo vệ Lựa chọn Kiến trúc
 
@@ -143,7 +143,7 @@ Hệ thống cần cập nhật **liên tục**:
 
 ---
 
-# 1. 🛡️ UserService (Auth) → PostgreSQL
+# 3. 🛡️ UserService (Auth) → PostgreSQL
 
 ## 1. Phân tích và Bảo vệ Lựa chọn Kiến trúc
 
@@ -196,7 +196,7 @@ Hệ thống cần cập nhật **liên tục**:
     - Đáp ứng yêu cầu của Module A
 
 ---
-# 2. 🧾 TripService → MongoDB
+# 4. 🧾 TripService → MongoDB
 
 ## 1. Phân tích và Bảo vệ Lựa chọn Kiến trúc
 
@@ -252,7 +252,7 @@ TripService quản lý **vòng đời của một cuốc xe**. Một cuốc xe l
 - **Tuning phụ: Tối ưu Indexes**
   - Đảm bảo tất cả các trường dùng để truy vấn (`status`, `driver_id`) đều được **index**, tăng tốc tìm kiếm và lọc document.
 ---
-# Lựa chọn Giao thức Giao tiếp: REST API (Giai đoạn "Bộ Xương")
+# 5. Lựa chọn Giao thức Giao tiếp: REST API (Giai đoạn "Bộ Xương")
 
 ## 1. Phân tích và Bảo vệ Lựa chọn Kiến trúc
 
@@ -312,4 +312,5 @@ Chúng em chọn **REST API** cho giai đoạn "bộ xương" ban đầu vì:
 - Giảm đáng kể **độ trễ** và **chi phí mạng**.
 - Cho phép hệ thống đáp ứng yêu cầu **hyper-scale** của Module A.
 - REST ban đầu cho phép chúng em **dựa trên dữ liệu Load Test để quyết định tối ưu**, thay vì tối ưu sớm không cần thiết.
+
 
