@@ -26,7 +26,7 @@ Sơ đồ thể hiện:
 
 ### 🧩 1.2 Mô tả Thành phần
 
-## 🧭 API Gateway
+# 🧭 API Gateway
 
 **API Gateway** là **điểm vào duy nhất (entry point)** của toàn bộ hệ thống microservices.  
 Tất cả request từ client (mobile app, web app) đều **đi qua Gateway** trước khi đến các service nội bộ như `auth-service`, `trip-service`, `driver-service`, ...
@@ -54,7 +54,7 @@ Tất cả request từ client (mobile app, web app) đều **đi qua Gateway** 
 | 💻 **Development** | Nginx Gateway hoặc Spring Cloud Gateway |
 
 ---
-## 🔎 Discovery Service
+# 🔎 Discovery Service
 
 **Discovery Service** chịu trách nhiệm **quản lý và định vị động (dynamic discovery)** các microservices trong hệ thống.  
 Thay vì phải cấu hình thủ công địa chỉ IP hoặc hostname, các service sẽ **đăng ký (register)** và **tra cứu (discover)** lẫn nhau thông qua Discovery Service.
@@ -82,7 +82,7 @@ Thay vì phải cấu hình thủ công địa chỉ IP hoặc hostname, các se
 | 💻 **Development** | Netflix Eureka (Spring Cloud Netflix) hoặc Consul local mode |
 
 ---
-## 👤 User Service
+# 👤 User Service
 
 **User Service** chịu trách nhiệm quản lý thông tin người dùng trong hệ thống UIT-Go, bao gồm **hành khách (User)** và **tài xế (Driver)**.  
 Đây là điểm đầu tiên mà mọi người dùng tương tác — từ **đăng ký, đăng nhập** cho đến **quản lý hồ sơ cá nhân**.
