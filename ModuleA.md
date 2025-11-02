@@ -90,3 +90,55 @@
 
 ---
 
+# ĐẶT XE
+![ĐẶT XE](Image/Đặtxe.png)
+---
+# ⚙️ Nguyên tắc Gửi Dữ liệu vị trí của Driver
+
+![Cập nhật vị trí](Image/logiccapnhatvitri.png)
+
+Ứng dụng **chỉ gửi vị trí mới** lên `DriverService` khi **một trong hai điều kiện sau** được thỏa mãn:
+
+1. **Đã trôi qua hơn 3–5 giây** kể từ lần gửi cuối
+    Hình này là nguyên tắc chu kỳ thời gian gửi
+   ![Cập nhật vị trí](Image/logiccapnhatvitri.png)
+3. **Hoặc** tài xế đã di chuyển **hơn 10–20 mét** so với vị trí trước đó  
+
+> 👉 Nhờ vậy, khi tài xế đứng yên (kẹt xe, dừng đèn đỏ...), ứng dụng **không gửi liên tục** dữ liệu trùng lặp.
+
+---
+
+### 💓 Cơ chế “Heartbeat” Dự phòng
+
+Nếu tài xế **đứng im quá lâu** (trên 2–3 phút), ứng dụng sẽ gửi một **gói “heartbeat”** để báo cho server biết:  
+> “Tôi vẫn đang online, chỉ là chưa di chuyển.”
+
+---
+
+### 🚀 Lợi ích
+
+| Lợi ích | Mô tả |
+|----------|--------|
+| 🔋 Tiết kiệm pin | Không gửi request liên tục khi không cần thiết |
+| 🌐 Giảm tải server | Giảm số lượng API call và update vào Redis/MongoDB |
+| ⚡ Phản hồi nhanh | Gửi ngay khi tài xế di chuyển đủ xa |
+| 🧠 Dễ mở rộng | Có thể tinh chỉnh ngưỡng `distance_threshold` và `time_interval` động theo trạng thái |
+
+
+---
+
+## ⚡ Tại sao chọn WebSocket cho TripService
+
+WebSocket được chọn để hỗ trợ giao tiếp **hai chiều (bi-directional)** giữa server và client theo **thời gian thực**.
+
+### 🚖 1. Đặc thù của TripService
+TripService là trung tâm điều phối giữa:
+- 🧍‍♂️ **Người dùng (User)**: tạo và theo dõi chuyến đi  
+- 🚗 **Tài xế (Driver)**: nhận cuốc, cập nhật trạng thái và vị trí  
+
+Hệ thống cần cập nhật **liên tục**:
+- Khi tài xế **nhận cuốc**, người dùng thấy ngay  
+- Khi người dùng **hủy**, tài xế biết ngay  
+- Khi tài xế **di chuyển**, vị trí được cập nhật real-time  
+
+
