@@ -380,13 +380,12 @@ services:
 | Thành phần | Công nghệ |
 |-------------|------------|
 | Backend | Java Spring Boot |
-| Communication | REST / gRPC |
+| Communication | REST, WEBSOCKET |
 | Messaging | Kafka |
 | Databases | PostgreSQL, MongoDB, Redis |
 | Container | Docker, Docker Compose |
 | Cloud | AWS (ECS/EKS, ALB, ElastiCache, RDS) |
 | IaC | Terraform |
-| Monitoring | Prometheus / Grafana |
 
 ---
 
