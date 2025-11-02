@@ -199,84 +199,89 @@ Dịch vụ này kết nối **AuthService** (người dùng), **DriverService**
 
 ---
 
-# Infrastructure Architecture (AWS)
+# Kiến trúc Hạ tầng (AWS)
 
 ### Terraform Infrastructure as Code
-#### Nơi cập nhật: https://github.com/UIT-GO/IaC
-Located in `IaC/terraform/` directory with the following structure:
+#### Nguồn cập nhật: https://github.com/UIT-GO/IaC
+Nằm trong thư mục `IaC/terraform/` với cấu trúc như sau:
 
-#### Core Infrastructure Components:
+#### Các Thành phần Hạ tầng Chính:
 
 **1. Container Registry (ECR)**
-- Three ECR repositories for service images:
+- Ba repository trên ECR cho các dịch vụ:
   - `auth-service`
   - `driver-service` 
   - `trip-service`
 
-**2. Compute Resources**
-- **EC2 Instance**: t3.micro (cost-optimized)
-- **AMI**: Region-specific (configurable)
-- **Instance Profile**: IAM role with ECR read permissions
-- **Key Pair**: SSH access for administration
+**2. Tài nguyên Tính toán (Compute Resources)**
+- **EC2 Instance**: t3.micro (tối ưu chi phí)
+- **AMI**: Phù hợp theo vùng (có thể cấu hình)
+- **Instance Profile**: IAM role có quyền đọc từ ECR
+- **Key Pair**: Truy cập SSH cho quản trị
 
-**3. Networking**
-- **VPC**: Configurable existing VPC
+**3. Mạng (Networking)**
+- **VPC**: Sử dụng VPC hiện có, có thể cấu hình
 - **Security Group**: 
-  - Inbound: Ports 3030-3032 (service ports)
-  - Outbound: All traffic allowed
-- **Subnet**: Configurable public subnet
+  - Inbound: Ports 3030-3032 (các service)
+  - Outbound: Cho phép toàn bộ traffic
+- **Subnet**: Subnet công khai, có thể cấu hình
 
-**4. IAM Security**
-- **EC2 Instance Role**: ECR read-only access
-- **Instance Profile**: Attached to EC2 for container registry access
+**4. Bảo mật IAM**
+- **EC2 Instance Role**: Chỉ đọc ECR
+- **Instance Profile**: Gắn với EC2 để truy cập container registry
 
-#### Terraform Configuration Files:
+#### Các Tệp Cấu hình Terraform:
 
-**main.tf**: Core infrastructure resources
-**variables.tf**: Configurable parameters
-**outputs.tf**: Resource outputs for integration
-**terraform.tfvars**: Environment-specific values
+- **main.tf**: Định nghĩa các tài nguyên hạ tầng chính
+- **variables.tf**: Các tham số có thể cấu hình
+- **outputs.tf**: Output của các tài nguyên để tích hợp
+- **terraform.tfvars**: Giá trị môi trường cụ thể
 
-### Deployment Automation
+### Triển khai Tự động
 
 **User Data Script** (`user_data.sh`):
-- Docker and Docker Compose installation
-- AWS CLI setup
-- ECR authentication
-- Automated service deployment
-- Logging and error handling
-- Service health monitoring
+- Cài đặt Docker và Docker Compose
+- Cấu hình AWS CLI
+- Xác thực ECR
+- Triển khai tự động các dịch vụ
+- Logging và xử lý lỗi
+- Giám sát tình trạng dịch vụ
 
-## Data Architecture
+---
 
-### Database Design
+## Kiến trúc Dữ liệu
+
+### Thiết kế Cơ sở dữ liệu
 
 #### 1. PostgreSQL (Auth Service)
 - **Database**: `auth_service_db`
-- **Tables**: Users, roles, permissions
-- **Features**: ACID compliance, relational integrity
+- **Bảng**: Users, Roles, Permissions
+- **Tính năng**: Tuân thủ ACID, đảm bảo tính toàn vẹn dữ liệu
 - **Port**: 5432
 
 #### 2. MongoDB (Driver & Trip Services)
 - **Databases**: `driver-db`, `trip-db`
-- **Collections**: Drivers, trips, locations, bookings
-- **Features**: Document-based, horizontal scaling
+- **Collections**: Drivers, Trips, Locations, Bookings
+- **Tính năng**: Document-based, hỗ trợ mở rộng ngang
 - **Port**: 27017
-- **Authentication**: admin/admin123
+- **Xác thực**: admin/admin123
 
 #### 3. Redis (Caching Layer)
-- **Purpose**: Session storage, JWT token blacklisting, temporary data
-- **Configuration**: Password-protected (123456)
+- **Mục đích**: Lưu session, blacklist JWT, lưu trữ tạm thời
+- **Cấu hình**: Bảo vệ bằng mật khẩu `123456`
 - **Port**: 6379
 
-### Message Queue Architecture
+---
+
+### Kiến trúc Hàng đợi Tin nhắn
 
 #### Apache Kafka
-- **Purpose**: Event-driven communication between services
-- **Port**: 29092 (internal), 9092 (external)
-- **Zookeeper**: Coordination service (Port 2181)
+- **Mục đích**: Giao tiếp theo mô hình event-driven giữa các service
+- **Port**: 29092 (nội bộ), 9092 (bên ngoài)
+- **Zookeeper**: Dịch vụ điều phối (Port 2181)
 
-**Event Flow**:
+**Luồng sự kiện**:
+
 ```
 Auth Service → Kafka → [Driver Service, Trip Service]
 Driver Service → Kafka → [Trip Service, Auth Service]
@@ -287,10 +292,10 @@ Trip Service → Kafka → [Driver Service, Auth Service]
 
 ### Docker Configuration
 
-**Individual Dockerfiles**:
-- Each service has its own optimized Dockerfile
-- Multi-stage builds for reduced image size
-- Java 17 runtime environment
+**Dockerfile riêng biệt cho từng dịch vụ**:
+- Mỗi service có Dockerfile tối ưu
+- Sử dụng multi-stage build để giảm dung lượng image
+- Môi trường chạy: Java 17
 
 **Docker Compose** (`IaC/docker-compose.yml`):
 ```yaml
@@ -306,9 +311,9 @@ services:
 ```
 
 ### Container Registry (ECR)
-- Automated image builds and pushes
-- Version tagging for rollbacks
-- Regional repositories for performance
+-Tự động build và push image
+- Gắn version để rollback khi cần
+- Repository theo vùng để tối ưu hiệu năng
 
 ---
 ### ⚙️ 1.3 Nguyên tắc Thiết kế
