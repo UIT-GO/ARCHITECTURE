@@ -3,7 +3,7 @@
 Tài liệu này trình bày **kiến trúc hệ thống tổng quan** và **kiến trúc chi tiết cho các module** của dự án **UIT-Go** — hệ thống đặt xe thời gian thực theo mô hình Microservice. Use case triển khai có trong folder Image.
 ## Mục lục
 
-1. [Kiến trúc Tổng quan (Giai đoạn 1: Bộ Xương)](#kiến-trúc-tổng-quan-giai-doan-1-bộ-xương)
+1. [Kiến trúc Tổng quan (Giai đoạn 1: Bộ Xương)](#-1-kiến-trúc-tổng-quan-giai-đoạn-1-bộ-xương)
     - [Sơ đồ Kiến trúc](#sơ-đồ-kiến-trúc)
     - [Mô tả Thành phần](#mô-tả-thành-phan)
 2. [API Gateway](#api-gateway)
