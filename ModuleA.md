@@ -196,39 +196,58 @@ Hệ thống cần cập nhật **liên tục**:
     - Đáp ứng yêu cầu của Module A
 
 ---
-# 🧾 TripService → MongoDB (CSDL Tài liệu)
+# 2. 🧾 TripService → MongoDB
 
-## Trách nhiệm của Service
-- Xử lý logic tạo chuyến đi.
-- Quản lý các trạng thái của chuyến: **PENDING**, **ACCEPTED**, **IN_PROGRESS**, **COMPLETED**, v.v.
+## 1. Phân tích và Bảo vệ Lựa chọn Kiến trúc
 
-## Loại dữ liệu
-- Một "cuốc xe" (Trip) là **document** có cấu trúc linh hoạt và liên tục phát triển.
-- Ví dụ về trạng thái Trip:
-  - **Bắt đầu**: `{ user_id, pickup, destination, status: "PENDING" }`
-  - **Cập nhật khi được chấp nhận**: `{ ..., driver_id: "xyz", status: "ACCEPTED" }`
-  - **Trong quá trình chạy**: `{ ..., route_history: [...], status: "IN_PROGRESS" }`
-  - **Kết thúc**: `{ ..., final_fare: 10, rating: 5, status: "COMPLETED" }`
+### Phân tích (Nhiệm vụ)
+TripService quản lý **vòng đời của một cuốc xe**. Một cuốc xe là một **document** có cấu trúc liên tục thay đổi:
 
-## Lý do chọn MongoDB
+- **Bắt đầu:** `{ user_id, pickup, destination, status: "PENDING" }`
+- **Thêm tài xế:** `{ ... , driver_id: "xyz", status: "ASSIGNED" }`
+- **Thêm lịch sử tuyến đường:** `{ ... , route_history: [...], status: "ON-TRIP" }`
+- **Hoàn thành và đánh giá:** `{ ... , final_fare: 10, rating: 5, status: "COMPLETED" }`
 
-### 1. Schema Linh hoạt (Flexible Schema)
-- MongoDB không yêu cầu định nghĩa tất cả các cột từ đầu.
-- Dễ dàng thêm trường mới (rating, comment...) mà không cần **ALTER TABLE**.
-- Hỗ trợ phát triển nhanh, thích hợp với các tính năng mới liên tục.
+### Bảo vệ Quyết định (Chọn MongoDB)
+- Chọn **MongoDB (DocumentDB)** vì **Flexible Schema**:
+  - Dễ dàng thêm các trường mới (`rating`, `payment_method`,...) mà không cần ALTER TABLE.
+  - Hỗ trợ phát triển nhanh, linh hoạt.
+- **Tối ưu cho đọc (Read Optimization):**
+  - Toàn bộ thông tin cuốc xe được lưu trong một **document duy nhất**.
+  - Khi cần xem chi tiết cuốc xe, chỉ cần **1 thao tác đọc**, không cần JOIN nhiều bảng như SQL.
+- **Khả năng mở rộng (Scalability):**
+  - MongoDB hỗ trợ **sharding**, dễ dàng scale-out khi số lượng cuốc xe lên hàng triệu, hàng tỷ.
 
-### 2. Tối ưu cho Đọc (Read Optimization)
-- Toàn bộ thông tin về một cuốc xe có thể lưu trong một document duy nhất.
-- Khi cần xem chi tiết, chỉ cần **1 thao tác read** thay vì JOIN nhiều bảng như trong SQL.
-- Giúp giảm độ trễ và tăng hiệu năng truy vấn.
+### Trade-off (Đánh đổi)
+- Chấp nhận **tính nhất quán yếu hơn** (`eventual consistency`) giữa nhiều document.
+- Đổi lấy **sự linh hoạt của schema** và **khả năng scale-out** dễ dàng.
 
-### 3. Khả năng Mở rộng (Scalability)
-- MongoDB hỗ trợ scale ngang (sharding) dễ dàng.
-- Phù hợp khi số lượng cuốc xe tăng lên hàng triệu, hàng tỷ.
+---
 
-## Kết luận
-- MongoDB được chọn vì TripService ưu tiên **linh hoạt của cấu trúc** và **tốc độ đọc/ghi** cho các đối tượng (tài liệu) độc lập.
+## 2. Kiểm chứng Thiết kế bằng Load Testing
 
+### Kịch bản (Write-heavy)
+- Mô phỏng **1.000 người dùng đặt xe đồng thời** ("Thundering Herd").
+- Tạo ra **1.000 lượt "ghi" (create document)** mới.
 
+### Metrics cần theo dõi
+- **P99 Latency** của API đặt xe
+- **Tỷ lệ lỗi ghi**
 
+### Bottleneck
+- Disk I/O hoặc CPU của MongoDB khi tải cao.
 
+---
+
+## 3. Hiện thực hóa các Kỹ thuật Tối ưu hóa (Tuning)
+
+### Vấn đề
+- Load Test cho thấy **độ trễ "ghi" tăng vọt** khi tải cao.
+
+### Giải pháp (Tuning)
+- **Sharding (Phân mảnh)**
+  - Khi một instance MongoDB không thể chịu nổi tải "ghi", shard collection `trips`.
+  - **Shard key:** `trip_id` hoặc `user_id`
+  - Logic: Tải "ghi" được phân tán ra nhiều **shard**, cho phép **scale ngang gần như vô hạn**.
+- **Tuning phụ: Tối ưu Indexes**
+  - Đảm bảo tất cả các trường dùng để truy vấn (`status`, `driver_id`) đều được **index**, tăng tốc tìm kiếm và lọc document.
