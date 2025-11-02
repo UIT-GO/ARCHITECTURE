@@ -186,8 +186,10 @@ Dịch vụ này kết nối **UserService** (người dùng), **DriverService**
 ![ĐẶT XE](Image/Đặtxe.png)
 ---
 # ⚙️ Nguyên tắc Gửi Dữ liệu vị trí của Driver
+
 ![Cập nhật vị trí](Image/logiccapnhatvitri.png)
-|Ứng dụng **chỉ gửi vị trí mới** lên `DriverService` khi **một trong hai điều kiện sau** được thỏa mãn:
+
+Ứng dụng **chỉ gửi vị trí mới** lên `DriverService` khi **một trong hai điều kiện sau** được thỏa mãn:
 
 1. **Đã trôi qua hơn 3–5 giây** kể từ lần gửi cuối  
 2. **Hoặc** tài xế đã di chuyển **hơn 10–20 mét** so với vị trí trước đó  
@@ -198,7 +200,7 @@ Dịch vụ này kết nối **UserService** (người dùng), **DriverService**
 
 ### 💓 Cơ chế “Heartbeat” Dự phòng
 
-Nếu tài xế **đứng im quá lâu** (trên 2–3 phút), ứng dụng sẽ gửi một **gói “heartbeat”** để báo cho server biết:
+Nếu tài xế **đứng im quá lâu** (trên 2–3 phút), ứng dụng sẽ gửi một **gói “heartbeat”** để báo cho server biết:  
 > “Tôi vẫn đang online, chỉ là chưa di chuyển.”
 
 ---
@@ -211,6 +213,7 @@ Nếu tài xế **đứng im quá lâu** (trên 2–3 phút), ứng dụng sẽ 
 | 🌐 Giảm tải server | Giảm số lượng API call và update vào Redis/MongoDB |
 | ⚡ Phản hồi nhanh | Gửi ngay khi tài xế di chuyển đủ xa |
 | 🧠 Dễ mở rộng | Có thể tinh chỉnh ngưỡng `distance_threshold` và `time_interval` động theo trạng thái |
+
 
 ---
 
