@@ -82,12 +82,26 @@ Thay vì phải cấu hình thủ công địa chỉ IP hoặc hostname, các se
 | 💻 **Development** | Netflix Eureka (Spring Cloud Netflix) hoặc Consul local mode |
 
 ---
-#### 👤 UserService
-- **Trách nhiệm:**  
-  - Quản lý thông tin người dùng (hành khách & tài xế).  
-  - Xử lý đăng ký, đăng nhập, xác thực và quản lý hồ sơ.  
-- **Cơ sở dữ liệu:** PostgreSQL (hoặc MySQL).  
-- **Kết nối:** Cung cấp REST API cho app client, và gRPC nội bộ cho TripService.  
+## 👤 User Service
+
+**User Service** chịu trách nhiệm quản lý thông tin người dùng trong hệ thống UIT-Go, bao gồm **hành khách (User)** và **tài xế (Driver)**.  
+Đây là điểm đầu tiên mà mọi người dùng tương tác — từ **đăng ký, đăng nhập** cho đến **quản lý hồ sơ cá nhân**.
+
+---
+
+### ⚙️ Chức năng chính
+- 📝 **Đăng ký (Sign Up):** Người dùng có thể tạo tài khoản mới (hành khách hoặc tài xế).  
+- 🔐 **Đăng nhập (Sign In):** Xác thực danh tính bằng JWT hoặc OAuth2.  
+- 🧾 **Quản lý hồ sơ:** Cập nhật thông tin cá nhân, địa chỉ, email, và loại tài khoản.  
+- 🧭 **Phân quyền:** Xác định vai trò (`ROLE_USER`, `ROLE_DRIVER`) để giới hạn quyền truy cập tài nguyên.  
+- 💬 **Cung cấp thông tin cho các service khác:** Ví dụ `TripService` có thể truy vấn thông tin hành khách, hoặc `DriverService` cần thông tin hồ sơ tài xế.
+
+---
+
+### 🧱 Kiến trúc & Cơ sở dữ liệu
+- **Database:** PostgreSQL (hoặc MySQL tùy môi trường).  
+- **ORM:** Sử dụng JPA/Hibernate để ánh xạ bảng dữ liệu.  
+- **Mô hình dữ liệu chính:**  
 
 ---
 
