@@ -23,7 +23,7 @@ Sơ đồ thể hiện:
 - Các giao tiếp sử dụng: RestAPI, HTTP/HTTPS, WEBSOCKET
 
 ---
-## 1.2 Architecture Cloud Diagram
+### 1.1.1 Architecture Cloud Diagram
 ```
 ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐
 │   Frontend Client   │    │   Mobile App        │    │   External APIs     │
@@ -55,6 +55,53 @@ Sơ đồ thể hiện:
     │  └─────────────────┘  └─────────────────────────────┘ │
     └───────────────────────────────────────────────────────┘
 ```
+## 1.1.2 Infrastructure Architecture (AWS)
+
+### Terraform Infrastructure as Code
+Located in `IaC/terraform/` directory with the following structure:
+
+#### Core Infrastructure Components:
+
+**1. Container Registry (ECR)**
+- Three ECR repositories for service images:
+  - `auth-service`
+  - `driver-service` 
+  - `trip-service`
+
+**2. Compute Resources**
+- **EC2 Instance**: t3.micro (cost-optimized)
+- **AMI**: Region-specific (configurable)
+- **Instance Profile**: IAM role with ECR read permissions
+- **Key Pair**: SSH access for administration
+
+**3. Networking**
+- **VPC**: Configurable existing VPC
+- **Security Group**: 
+  - Inbound: Ports 3030-3032 (service ports)
+  - Outbound: All traffic allowed
+- **Subnet**: Configurable public subnet
+
+**4. IAM Security**
+- **EC2 Instance Role**: ECR read-only access
+- **Instance Profile**: Attached to EC2 for container registry access
+
+#### Terraform Configuration Files:
+
+**main.tf**: Core infrastructure resources
+**variables.tf**: Configurable parameters
+**outputs.tf**: Resource outputs for integration
+**terraform.tfvars**: Environment-specific values
+
+### Deployment Automation
+
+**User Data Script** (`user_data.sh`):
+- Docker and Docker Compose installation
+- AWS CLI setup
+- ECR authentication
+- Automated service deployment
+- Logging and error handling
+- Service health monitoring
+
 ### 🧩 1.2 Mô tả Thành phần
 
 # 🧭 API Gateway
