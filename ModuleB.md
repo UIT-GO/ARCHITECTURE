@@ -1,7 +1,6 @@
 # 📄 Báo cáo Kế hoạch Chi tiết: Module B (Reliability & High Availability)
 
-**Tên Nhóm:** [Tên nhóm của bạn]  
-**Thành viên:** [Tên thành viên 1], [Tên thành viên 2], ...  
+**Thành viên:** Võ Minh Kiệt(22520727), Võ Mai Nguyên(22520991)  
 **Module đã chọn:** Module B: Thiết kế cho Reliability & High Availability  
 **Vai trò đảm nhận:** Kỹ sư Đảm bảo Độ tin cậy (Site Reliability Engineer - SRE)  
 
