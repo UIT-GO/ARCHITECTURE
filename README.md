@@ -1,85 +1,42 @@
 # 🏗️ UIT-Go System Architecture
 
 Tài liệu này trình bày **kiến trúc hệ thống tổng quan** và **kiến trúc chi tiết cho các module** của dự án **UIT-Go** — hệ thống đặt xe thời gian thực theo mô hình Microservice. Use case triển khai có trong folder Image.
-# 🗂️ Mục lục – UIT-Go System Architecture
+## Mục lục
 
-## 1. Giới thiệu
-- 1.1 Mục đích tài liệu
-- 1.2 Giai đoạn 1: “Bộ Xương”
-
-## 2. Kiến trúc tổng quan
-- 2.1 Sơ đồ kiến trúc
-- 2.2 Thành phần hệ thống
-
-## 3. Microservices chính
-### 3.1 API Gateway
-- Chức năng
-- Vai trò trong kiến trúc
-- Triển khai
-
-### 3.2 Discovery Service
-- Chức năng
-- Vai trò trong kiến trúc
-- Triển khai
-
-### 3.3 Auth Service
-- Mô tả
-- Chức năng chính
-- Kiến trúc & cơ sở dữ liệu
-
-### 3.4 Driver Service
-- Mô tả
-- Chức năng chính
-- Kiến trúc & thành phần
-
-### 3.5 Trip Service
-- Mô tả
-- Chức năng chính
-- Kiến trúc & thành phần
-
-## 4. Hạ tầng & triển khai
-### 4.1 Infrastructure Architecture (AWS)
-- Container Registry (ECR)
-- Compute Resources (EC2)
-- Networking (VPC, Security Groups, Subnet)
-- IAM Security
-
-### 4.2 Terraform Infrastructure as Code
-- Cấu trúc file: main.tf, variables.tf, outputs.tf, terraform.tfvars
-- Deployment Automation (user_data.sh)
-
-## 5. Kiến trúc dữ liệu
-- 5.1 PostgreSQL (Auth Service)
-- 5.2 MongoDB (Driver & Trip Services)
-- 5.3 Redis (Caching Layer)
-
-## 6. Kiến trúc messaging
-- 6.1 Apache Kafka
-  - Event Flow giữa các service
-
-## 7. Containerization & Orchestration
-- 7.1 Docker Configuration
-- 7.2 Docker Compose
-- 7.3 Container Registry (ECR)
-
-## 8. Nguyên tắc thiết kế
-- 8.1 Giao tiếp giữa các service (gRPC & REST)
-- 8.2 Database per Service
-- 8.3 Containerization
-- 8.4 Infrastructure as Code (IaC)
-- 8.5 Triển khai & CI/CD
-
-## 9. Event Flow tổng quan
-- Tóm tắt luồng xử lý trip: PENDING → ASSIGNED → ONGOING → COMPLETED
-
-## 10. Công nghệ sử dụng
-- Backend, Communication, Messaging, Databases, Container, Cloud, IaC
-
-## 11. Testing Strategy
-- Test coverage AuthService, TripService, DriverService
-
-## 12. Tác giả & Phiên bản
-- Tác giả, Phiên bản, Trạng thái hiện tại
+1. [Giới thiệu](#1-giới-thiệu)
+    - [Giai đoạn 1: Bộ Xương](#12-giai-doan-1-bộ-xương)
+2. [Kiến trúc tổng quan](#2-kiến-trúc-tổng-quan)
+    - [Sơ đồ kiến trúc](#21-sơ-đồ-kiến-trúc)
+3. [Microservices chính](#3-microservices-chính)
+    - [API Gateway](#31-🧭-api-gateway)
+    - [Discovery Service](#32-🔎-discovery-service)
+    - [Auth Service](#33-👤-auth-service)
+    - [Driver Service](#34-🚖-driver-service)
+    - [Trip Service](#35-🚘-trip-service)
+4. [Infrastructure Architecture (AWS)](#infrastructure-architecture-aws)
+    - [Terraform Infrastructure as Code](#terraform-infrastructure-as-code)
+    - [Deployment Automation](#deployment-automation)
+5. [Data Architecture](#data-architecture)
+    - [PostgreSQL (Auth Service)](#1-postgresql-auth-service)
+    - [MongoDB (Driver & Trip Services)](#2-mongodb-driver--trip-services)
+    - [Redis (Caching Layer)](#3-redis-caching-layer)
+6. [Message Queue Architecture](#message-queue-architecture)
+    - [Apache Kafka](#apache-kafka)
+    - [Event Flow](#event-flow)
+7. [Containerization & Orchestration](#containerization--orchestration)
+    - [Docker Configuration](#docker-configuration)
+    - [Docker Compose](#docker-compose)
+    - [Container Registry (ECR)](#container-registry-ecr)
+8. [Nguyên tắc thiết kế](#⚙️-13-nguyên-tắc-thiết-kế)
+    - [Giao tiếp giữa các Service](#🛰️-giao-tiếp-giữa-các-service)
+    - [Database per Service](#🗄️-database-per-service)
+    - [Containerization](#🐳-containerization)
+    - [Infrastructure as Code (IaC)](#🧱-infrastructure-as-code-iac)
+    - [Triển khai](#☁️-triển-khai)
+9. [Event Flow (Tóm tắt)](#🧠-14-event-flow-tóm-tắt)
+10. [Công nghệ sử dụng](#📦-15-công-nghệ-sử-dụng)
+11. [Testing Strategy](#testing-strategy)
+12. [Tác giả & Phiên bản](#📘-tác-giả-📅-phiên-bản-🧱-trạng-thái)
 
 ---
 
