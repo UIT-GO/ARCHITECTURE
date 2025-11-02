@@ -143,39 +143,58 @@ Hệ thống cần cập nhật **liên tục**:
 
 ---
 
-# 🛡️ AuthService (Auth) → PostgreSQL (CSDL Quan hệ)
+# 1. 🛡️ UserService (Auth) → PostgreSQL
 
-## Trách nhiệm của Service
-- Quản lý thông tin người dùng.
-- Xử lý đăng ký, đăng nhập.
-- Quản lý hồ sơ (profiles).
+## 1. Phân tích và Bảo vệ Lựa chọn Kiến trúc
 
-## Loại dữ liệu
-- Dữ liệu có cấu trúc (structured) và quan hệ (relational) cao.
-- Một User có một Profile.
-- Một User có thông tin Credentials (tên đăng nhập, mật khẩu đã hash).
-- Dữ liệu phải được **nhất quán**.
+### Phân tích (Nhiệm vụ)
+- UserService quản lý **dữ liệu nhạy cảm** và có cấu trúc chặt chẽ (users, profiles, credentials).
+- Yêu cầu quan trọng nhất:
+  - **Tính nhất quán (Consistency)**
+  - **Toàn vẹn dữ liệu (Integrity)**
 
-## Lý do chọn PostgreSQL
+### Bảo vệ Quyết định (Chọn PostgreSQL)
+- Chúng em chọn **CSDL Quan hệ (PostgreSQL)** vì đảm bảo **ACID** (Atomicity, Consistency, Isolation, Durability).
+- Khi người dùng đổi mật khẩu, hệ thống phải thực thi **ngay lập tức và chính xác 100%**, không chấp nhận **Eventual Consistency**.
+- Dữ liệu người dùng (users và user_profiles) có quan hệ 1-1 rõ ràng:
+  - PostgreSQL hỗ trợ **constraints** và **foreign keys** đảm bảo dữ liệu không bị sai lệch.
 
-### 1. Tính nhất quán mạnh (Strong Consistency - ACID)
-- Đây là yêu cầu bắt buộc cho dịch vụ xác thực.
-- Ví dụ: Khi người dùng đổi mật khẩu, phải đảm bảo lần đăng nhập tiếp theo sử dụng mật khẩu mới.
-- Không thể chấp nhận **eventual consistency** trong trường hợp này.
+### Trade-off (Đánh đổi)
+- Hy sinh:
+  - **Schema flexibility** (tính linh hoạt của cấu trúc)
+  - **Khả năng scale-out (ghi) phức tạp hơn**
+- Lợi ích:
+  - Đổi lấy **tính nhất quán tuyệt đối** và **toàn vẹn dữ liệu**.
 
-### 2. Toàn vẹn Dữ liệu (Data Integrity)
-- PostgreSQL cho phép sử dụng **constraints** và **foreign keys**.
-- Đảm bảo dữ liệu luôn sạch và đúng.
-- Ví dụ: Không thể tạo hồ sơ (profile) cho một `user_id` không tồn tại.
+## 2. Kiểm chứng Thiết kế bằng Load Testing
 
-### 3. Giao dịch (Transactions)
-- Khi đăng ký, có thể cần thực hiện nhiều thao tác:
-  - Tạo record `user`.
-  - Tạo record `profile`.
-- Transactions đảm bảo **tất cả hoặc không gì cả**.
+### Kịch bản 1 (Read-heavy)
+- Mô phỏng **5.000 người dùng đăng nhập (login) đồng thời**.
+- Metric: **P99 Latency** của API login.
+- Bottleneck: **CPU của CSDL chính**.
 
-## Kết luận
-- PostgreSQL được chọn vì **UserService ưu tiên tính nhất quán và toàn vẹn dữ liệu** hơn tốc độ ghi hay sự linh hoạt.
+### Kịch bản 2 (Write-heavy)
+- Mô phỏng **1.000 người dùng đăng ký (register) đồng thời**.
+- Metric: **Error Rate** và số lượng **kết nối (connections)** đến CSDL.
+
+## 3. Hiện thực hóa các Kỹ thuật Tối ưu hóa (Tuning)
+
+### Vấn đề
+- Load Test cho thấy **CPU của Primary Node bị quá tải** khi có nhiều yêu cầu đọc đồng thời.
+
+### Giải pháp (Tuning)
+- **Mở rộng CSDL bằng Read Replicas**
+  - Hiện thực:
+    - 1 **Primary Node** (ghi)
+    - 2 **Read Replica Nodes** (đọc)
+  - Logic:
+    - **Ghi** (Đăng ký, Đổi mật khẩu) → Primary Node
+    - **Đọc** (Đăng nhập, Lấy hồ sơ) → Read Replicas
+  - Kết quả:
+    - Giảm tải CPU cho Primary Node
+    - Tăng throughput cho luồng **read**
+    - Đáp ứng yêu cầu của Module A
+
 ---
 # 🧾 TripService → MongoDB (CSDL Tài liệu)
 
@@ -209,6 +228,7 @@ Hệ thống cần cập nhật **liên tục**:
 
 ## Kết luận
 - MongoDB được chọn vì TripService ưu tiên **linh hoạt của cấu trúc** và **tốc độ đọc/ghi** cho các đối tượng (tài liệu) độc lập.
+
 
 
 
