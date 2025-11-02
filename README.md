@@ -15,7 +15,7 @@ Giai đoạn này tập trung xây dựng nền tảng **core system** gồm 3 m
 ![Architecture Diagram](Image/BASIC.png)
 Sơ đồ thể hiện:
 - API GATEWAY, Discovery Service
-- UserService
+- AuthService
 - TripService
 - DriverService
 - Kafka (hoặc SQS, RabbitMQ) cho giao tiếp sự kiện
@@ -80,7 +80,7 @@ Thay vì phải cấu hình thủ công địa chỉ IP hoặc hostname, các se
 | 💻 **Development** | Netflix Eureka (Spring Cloud Netflix) hoặc Consul local mode |
 
 ---
-# 👤 User Service
+# 👤 Auth Service
 
 **User Service** chịu trách nhiệm quản lý thông tin người dùng trong hệ thống UIT-Go, bao gồm **hành khách (User)** và **tài xế (Driver)**.  
 Đây là điểm đầu tiên mà mọi người dùng tương tác — từ **đăng ký, đăng nhập** cho đến **quản lý hồ sơ cá nhân**.
@@ -145,7 +145,7 @@ Dịch vụ này là thành phần trung tâm trong luồng định vị và đi
 
 ## 📘 Mô tả
 `TripService` là **trung tâm điều phối** trong hệ thống **UIT-Go**, chịu trách nhiệm quản lý **vòng đời của cuốc xe (Trip Lifecycle)** — từ khi người dùng đặt xe cho đến khi chuyến đi hoàn tất.  
-Dịch vụ này kết nối **UserService** (người dùng), **DriverService** (tài xế), và hệ thống **Kafka Event Bus** để đảm bảo luồng xử lý phi đồng bộ, mở rộng linh hoạt và phản hồi nhanh.
+Dịch vụ này kết nối **AuthService** (người dùng), **DriverService** (tài xế), và hệ thống **Kafka Event Bus** để đảm bảo luồng xử lý phi đồng bộ, mở rộng linh hoạt và phản hồi nhanh.
 
 ---
 
@@ -389,6 +389,7 @@ services:
 
 ---
 # Testing Strategy
+##TEST COVERAGE AUTHSERVICE
 ![AuthService](Image/testAuthService.jpg)
 ---
 📘 **Tác giả:** UIT-Go Team  
