@@ -91,10 +91,11 @@ Thay vì phải cấu hình thủ công địa chỉ IP hoặc hostname, các se
 
 ### ⚙️ Chức năng chính
 - 📝 **Đăng ký (Sign Up):** Người dùng có thể tạo tài khoản mới (hành khách hoặc tài xế).  
-- 🔐 **Đăng nhập (Sign In):** Xác thực danh tính bằng JWT hoặc OAuth2.  
+- 🔐 **Đăng nhập (Sign In):** Sinh **JWT Access Token** và **Refresh Token**, quản lý vòng đời token qua Redis.  
+- ♻️ **Làm mới token (Token Refresh):** Cung cấp endpoint để cấp lại Access Token khi Refresh Token hợp lệ.  
 - 🧾 **Quản lý hồ sơ:** Cập nhật thông tin cá nhân, địa chỉ, email, và loại tài khoản.  
-- 🧭 **Phân quyền:** Xác định vai trò (`ROLE_USER`, `ROLE_DRIVER`) để giới hạn quyền truy cập tài nguyên.  
-- 💬 **Cung cấp thông tin cho các service khác:** Ví dụ `TripService` có thể truy vấn thông tin hành khách, hoặc `DriverService` cần thông tin hồ sơ tài xế.
+- 🧭 **Phân quyền:** Xác định vai trò (`ROLE_USER`, `ROLE_DRIVER`) để kiểm soát quyền truy cập API.  
+- 💬 **Cung cấp thông tin cho các service khác:** Ví dụ `TripService` cần thông tin hành khách, hoặc `DriverService` cần xác minh hồ sơ tài xế.
 
 ---
 
