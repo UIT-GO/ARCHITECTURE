@@ -20,6 +20,7 @@ Sơ đồ thể hiện:
 - DriverService
 - Kafka (hoặc SQS, RabbitMQ) cho giao tiếp sự kiện
 - Redis / PostgreSQL / MongoDB làm backend cho từng service
+- Các giao tiếp sử dụng: RestAPI, HTTP/HTTPS, WEBSOCKET
 
 ---
 
