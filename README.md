@@ -26,10 +26,34 @@ Sơ đồ thể hiện:
 
 ### 🧩 1.2 Mô tả Thành phần
 
-#### 🧭 Application Load Balancer (ALB)
-- **Chức năng:** Điểm vào (entry point) của toàn hệ thống.  
-- **Vai trò:** Phân phối request HTTP/gRPC đến các service nội bộ tương ứng.  
-- **Triển khai:** AWS ALB hoặc Nginx Gateway (ở môi trường dev).
+## 🧭 API Gateway
+
+**API Gateway** là **điểm vào duy nhất (entry point)** của toàn bộ hệ thống microservices.  
+Tất cả request từ client (mobile app, web app) đều **đi qua Gateway** trước khi đến các service nội bộ như `auth-service`, `trip-service`, `driver-service`, ...
+
+---
+
+### ⚙️ Chức năng chính
+- 🔀 **Routing:** Định tuyến request đến đúng microservice tương ứng.  
+- 🔒 **Authentication & Authorization:** Kiểm tra token và phân quyền truy cập.  
+- 📊 **Rate Limiting & Logging:** Giới hạn tần suất truy cập, ghi log tập trung.  
+- 🧩 **Response Aggregation:** Tổng hợp dữ liệu từ nhiều service để giảm số lượng request client cần gửi.  
+- 🛡️ **Security Layer:** Che giấu cấu trúc hệ thống nội bộ, tăng cường bảo mật.
+
+---
+
+### 🎯 Vai trò trong kiến trúc
+- Đơn giản hóa giao tiếp giữa client và hệ thống backend.  
+- Tăng **tính bảo mật**, **dễ quản lý**, và **dễ mở rộng** khi thêm service mới.  
+- Hỗ trợ **load balancing**, **caching** và **fallback** khi có service gặp sự cố.
+
+---
+
+### 🚀 Triển khai
+| Môi trường | Công nghệ sử dụng |
+|-------------|------------------|
+| 🏭 **Production** | AWS Application Load Balancer (ALB) hoặc AWS API Gateway |
+| 💻 **Development** | Nginx Gateway hoặc Spring Cloud Gateway |
 
 ---
 
