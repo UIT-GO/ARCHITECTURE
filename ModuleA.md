@@ -46,7 +46,9 @@
     - Nếu số message < 100 → giảm instance để tiết kiệm chi phí.  
 
 ---
-
+# ĐẶT XE
+![ĐẶT XE](Image/Đặtxe.png)
+---
 ## Use Case 2: Cập nhật vị trí của Driver
 
 ### 1. Phân tích và Bảo vệ Lựa chọn Kiến trúc
@@ -90,9 +92,7 @@
 
 ---
 
-# ĐẶT XE
-![ĐẶT XE](Image/Đặtxe.png)
----
+
 # ⚙️ Nguyên tắc Gửi Dữ liệu vị trí của Driver
 
 ![Cập nhật vị trí](Image/logiccapnhatvitri.png)
@@ -140,5 +140,6 @@ Hệ thống cần cập nhật **liên tục**:
 - Khi tài xế **nhận cuốc**, người dùng thấy ngay  
 - Khi người dùng **hủy**, tài xế biết ngay  
 - Khi tài xế **di chuyển**, vị trí được cập nhật real-time  
+
 
 
