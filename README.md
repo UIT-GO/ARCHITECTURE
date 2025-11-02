@@ -389,7 +389,7 @@ services:
 
 ---
 # Testing Strategy
-
+![AuthService](Image/testAuthService.png)
 📘 **Tác giả:** UIT-Go Team  
 📅 **Phiên bản:** Giai đoạn 1 – “Bộ Xương”  
 🧱 **Trạng thái:** Đang triển khai nền tảng core
