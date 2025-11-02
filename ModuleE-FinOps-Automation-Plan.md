@@ -91,15 +91,18 @@ Thiết kế quy trình phát triển và vận hành hiệu quả, kiểm soát
 
 ---
 
-## 📅 Timeline
-| Giai đoạn | Công việc | Thời gian |
-|-----------|-----------|-----------|
-| 1 | Thiết kế & chuẩn hóa CI/CD, Terraform modules | 2 tuần |
-| 2 | Thiết lập tagging, Cost Explorer, Budgets | 1 tuần |
-| 3 | Thí điểm tối ưu chi phí, đo lường | 2 tuần |
-| 4 | Tổng kết, đào tạo, mở rộng | 1 tuần |
+## 🔍 Phân tích Trade-off: Chi phí, Hiệu năng, Công sức Vận hành
 
----
+| Phương án           | Chi phí      | Hiệu năng      | Công sức vận hành |
+|---------------------|--------------|---------------|-------------------|
+| EC2 On-Demand       | Cao          | Ổn định, dễ kiểm soát | Vận hành thủ công, cần quản lý patch, scale |
+| EC2 Spot            | Thấp hơn 60% | Có thể bị gián đoạn | Cần tự động hóa failover, phức tạp hơn |
+| ECS Fargate         | Trung bình   | Tự động scale, ổn định | Vận hành đơn giản, không quản lý server |
+| Graviton (ARM)      | Giảm 20–40%  | Hiệu năng tốt với Java | Cần kiểm tra compatibility, migrate code |
+| Serverless (Lambda) | Rất thấp     | Scale động, latency thấp | Phù hợp tác vụ nhỏ, giới hạn runtime |
 
-## 📘 Tác giả: Platform & FinOps Engineer
-## 🧱 Trạng thái: Đang triển khai
+**Nhận xét:**
+- EC2 On-Demand phù hợp cho hệ thống cần uptime cao, nhưng chi phí lớn và vận hành thủ công.
+- EC2 Spot tiết kiệm chi phí nhưng cần quy trình tự động hóa để đảm bảo tính sẵn sàng.
+- ECS Fargate và Serverless giảm công sức vận hành, phù hợp với workload biến động, nhưng cần đánh giá giới hạn kỹ thuật.
+- Graviton giúp tiết kiệm chi phí compute, nhưng cần kiểm tra tương thích phần mềm.
