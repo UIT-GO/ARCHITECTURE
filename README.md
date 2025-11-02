@@ -342,6 +342,12 @@ services:
 # Testing Strategy
 ##TEST COVERAGE AUTHSERVICE
 ![AuthService](Image/testAuthService.jpg)
+##TEST COVERAGE TRIPSERVICE
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/abdbe0b0-a916-4025-9f90-6e3d726f8134" />
+##TEST COVERAGE DRIVERSERVICE
+<img width="1906" height="1029" alt="image" src="https://github.com/user-attachments/assets/62fa77ae-5dfc-49ef-92be-2eda35b94d46" />
+
+
 ---
 📘 **Tác giả:** UIT-Go Team  
 📅 **Phiên bản:** Giai đoạn 1 – “Bộ Xương”  
