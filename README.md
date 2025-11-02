@@ -1,6 +1,85 @@
 # 🏗️ UIT-Go System Architecture
 
 Tài liệu này trình bày **kiến trúc hệ thống tổng quan** và **kiến trúc chi tiết cho các module** của dự án **UIT-Go** — hệ thống đặt xe thời gian thực theo mô hình Microservice. Use case triển khai có trong folder Image.
+# 🗂️ Mục lục – UIT-Go System Architecture
+
+## 1. Giới thiệu
+- 1.1 Mục đích tài liệu
+- 1.2 Giai đoạn 1: “Bộ Xương”
+
+## 2. Kiến trúc tổng quan
+- 2.1 Sơ đồ kiến trúc
+- 2.2 Thành phần hệ thống
+
+## 3. Microservices chính
+### 3.1 API Gateway
+- Chức năng
+- Vai trò trong kiến trúc
+- Triển khai
+
+### 3.2 Discovery Service
+- Chức năng
+- Vai trò trong kiến trúc
+- Triển khai
+
+### 3.3 Auth Service
+- Mô tả
+- Chức năng chính
+- Kiến trúc & cơ sở dữ liệu
+
+### 3.4 Driver Service
+- Mô tả
+- Chức năng chính
+- Kiến trúc & thành phần
+
+### 3.5 Trip Service
+- Mô tả
+- Chức năng chính
+- Kiến trúc & thành phần
+
+## 4. Hạ tầng & triển khai
+### 4.1 Infrastructure Architecture (AWS)
+- Container Registry (ECR)
+- Compute Resources (EC2)
+- Networking (VPC, Security Groups, Subnet)
+- IAM Security
+
+### 4.2 Terraform Infrastructure as Code
+- Cấu trúc file: main.tf, variables.tf, outputs.tf, terraform.tfvars
+- Deployment Automation (user_data.sh)
+
+## 5. Kiến trúc dữ liệu
+- 5.1 PostgreSQL (Auth Service)
+- 5.2 MongoDB (Driver & Trip Services)
+- 5.3 Redis (Caching Layer)
+
+## 6. Kiến trúc messaging
+- 6.1 Apache Kafka
+  - Event Flow giữa các service
+
+## 7. Containerization & Orchestration
+- 7.1 Docker Configuration
+- 7.2 Docker Compose
+- 7.3 Container Registry (ECR)
+
+## 8. Nguyên tắc thiết kế
+- 8.1 Giao tiếp giữa các service (gRPC & REST)
+- 8.2 Database per Service
+- 8.3 Containerization
+- 8.4 Infrastructure as Code (IaC)
+- 8.5 Triển khai & CI/CD
+
+## 9. Event Flow tổng quan
+- Tóm tắt luồng xử lý trip: PENDING → ASSIGNED → ONGOING → COMPLETED
+
+## 10. Công nghệ sử dụng
+- Backend, Communication, Messaging, Databases, Container, Cloud, IaC
+
+## 11. Testing Strategy
+- Test coverage AuthService, TripService, DriverService
+
+## 12. Tác giả & Phiên bản
+- Tác giả, Phiên bản, Trạng thái hiện tại
 
 ---
 
