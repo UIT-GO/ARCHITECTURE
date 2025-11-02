@@ -176,5 +176,39 @@ Hệ thống cần cập nhật **liên tục**:
 
 ## Kết luận
 - PostgreSQL được chọn vì **UserService ưu tiên tính nhất quán và toàn vẹn dữ liệu** hơn tốc độ ghi hay sự linh hoạt.
+---
+# 🧾 TripService → MongoDB (CSDL Tài liệu)
+
+## Trách nhiệm của Service
+- Xử lý logic tạo chuyến đi.
+- Quản lý các trạng thái của chuyến: **PENDING**, **ACCEPTED**, **IN_PROGRESS**, **COMPLETED**, v.v.
+
+## Loại dữ liệu
+- Một "cuốc xe" (Trip) là **document** có cấu trúc linh hoạt và liên tục phát triển.
+- Ví dụ về trạng thái Trip:
+  - **Bắt đầu**: `{ user_id, pickup, destination, status: "PENDING" }`
+  - **Cập nhật khi được chấp nhận**: `{ ..., driver_id: "xyz", status: "ACCEPTED" }`
+  - **Trong quá trình chạy**: `{ ..., route_history: [...], status: "IN_PROGRESS" }`
+  - **Kết thúc**: `{ ..., final_fare: 10, rating: 5, status: "COMPLETED" }`
+
+## Lý do chọn MongoDB
+
+### 1. Schema Linh hoạt (Flexible Schema)
+- MongoDB không yêu cầu định nghĩa tất cả các cột từ đầu.
+- Dễ dàng thêm trường mới (rating, comment...) mà không cần **ALTER TABLE**.
+- Hỗ trợ phát triển nhanh, thích hợp với các tính năng mới liên tục.
+
+### 2. Tối ưu cho Đọc (Read Optimization)
+- Toàn bộ thông tin về một cuốc xe có thể lưu trong một document duy nhất.
+- Khi cần xem chi tiết, chỉ cần **1 thao tác read** thay vì JOIN nhiều bảng như trong SQL.
+- Giúp giảm độ trễ và tăng hiệu năng truy vấn.
+
+### 3. Khả năng Mở rộng (Scalability)
+- MongoDB hỗ trợ scale ngang (sharding) dễ dàng.
+- Phù hợp khi số lượng cuốc xe tăng lên hàng triệu, hàng tỷ.
+
+## Kết luận
+- MongoDB được chọn vì TripService ưu tiên **linh hoạt của cấu trúc** và **tốc độ đọc/ghi** cho các đối tượng (tài liệu) độc lập.
+
 
 
