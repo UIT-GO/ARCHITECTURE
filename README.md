@@ -22,86 +22,6 @@ Sơ đồ thể hiện:
 - Redis / PostgreSQL / MongoDB làm backend cho từng service
 - Các giao tiếp sử dụng: RestAPI, HTTP/HTTPS, WEBSOCKET
 
----
-### 1.1.1 Architecture Cloud Diagram
-```
-┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐
-│   Frontend Client   │    │   Mobile App        │    │   External APIs     │
-└─────────┬───────────┘    └─────────┬───────────┘    └─────────┬───────────┘
-          │                          │                          │
-          └──────────────────────────┼──────────────────────────┘
-                                     │
-              ┌─────────────────────────────────────────────┐
-              │              Load Balancer / Gateway        │
-              └─────────────────┬───────────────────────────┘
-                                │
-    ┌───────────────────────────┼───────────────────────────┐
-    │                           │                           │
-    │                     AWS EC2 Instance                  │
-    │                                                       │
-    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │
-    │  │Auth Service │  │Driver Service│  │Trip Service │  │
-    │  │  Port 3030  │  │  Port 3031  │  │  Port 3032  │  │
-    │  └─────────────┘  └─────────────┘  └─────────────┘  │
-    │                                                       │
-    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │
-    │  │ PostgreSQL  │  │   MongoDB   │  │    Redis    │  │
-    │  │  Port 5432  │  │  Port 27017 │  │  Port 6379  │  │
-    │  └─────────────┘  └─────────────┘  └─────────────┘  │
-    │                                                       │
-    │  ┌─────────────────┐  ┌─────────────────────────────┐ │
-    │  │     Kafka       │  │       Zookeeper             │ │
-    │  │   Port 29092    │  │      Port 2181              │ │
-    │  └─────────────────┘  └─────────────────────────────┘ │
-    └───────────────────────────────────────────────────────┘
-```
-## 1.1.2 Infrastructure Architecture (AWS)
-
-### Terraform Infrastructure as Code
-Located in `IaC/terraform/` directory with the following structure:
-
-#### Core Infrastructure Components:
-
-**1. Container Registry (ECR)**
-- Three ECR repositories for service images:
-  - `auth-service`
-  - `driver-service` 
-  - `trip-service`
-
-**2. Compute Resources**
-- **EC2 Instance**: t3.micro (cost-optimized)
-- **AMI**: Region-specific (configurable)
-- **Instance Profile**: IAM role with ECR read permissions
-- **Key Pair**: SSH access for administration
-
-**3. Networking**
-- **VPC**: Configurable existing VPC
-- **Security Group**: 
-  - Inbound: Ports 3030-3032 (service ports)
-  - Outbound: All traffic allowed
-- **Subnet**: Configurable public subnet
-
-**4. IAM Security**
-- **EC2 Instance Role**: ECR read-only access
-- **Instance Profile**: Attached to EC2 for container registry access
-
-#### Terraform Configuration Files:
-
-**main.tf**: Core infrastructure resources
-**variables.tf**: Configurable parameters
-**outputs.tf**: Resource outputs for integration
-**terraform.tfvars**: Environment-specific values
-
-### Deployment Automation
-
-**User Data Script** (`user_data.sh`):
-- Docker and Docker Compose installation
-- AWS CLI setup
-- ECR authentication
-- Automated service deployment
-- Logging and error handling
-- Service health monitoring
-
 ## 🧩 1.2 Mô tả Thành phần
 
 # 🧭 API Gateway
@@ -310,6 +230,115 @@ Hệ thống cần cập nhật **liên tục**:
 - Khi tài xế **nhận cuốc**, người dùng thấy ngay  
 - Khi người dùng **hủy**, tài xế biết ngay  
 - Khi tài xế **di chuyển**, vị trí được cập nhật real-time  
+## Infrastructure Architecture (AWS)
+
+### Terraform Infrastructure as Code
+Located in `IaC/terraform/` directory with the following structure:
+
+#### Core Infrastructure Components:
+
+**1. Container Registry (ECR)**
+- Three ECR repositories for service images:
+  - `auth-service`
+  - `driver-service` 
+  - `trip-service`
+
+**2. Compute Resources**
+- **EC2 Instance**: t3.micro (cost-optimized)
+- **AMI**: Region-specific (configurable)
+- **Instance Profile**: IAM role with ECR read permissions
+- **Key Pair**: SSH access for administration
+
+**3. Networking**
+- **VPC**: Configurable existing VPC
+- **Security Group**: 
+  - Inbound: Ports 3030-3032 (service ports)
+  - Outbound: All traffic allowed
+- **Subnet**: Configurable public subnet
+
+**4. IAM Security**
+- **EC2 Instance Role**: ECR read-only access
+- **Instance Profile**: Attached to EC2 for container registry access
+
+#### Terraform Configuration Files:
+
+**main.tf**: Core infrastructure resources
+**variables.tf**: Configurable parameters
+**outputs.tf**: Resource outputs for integration
+**terraform.tfvars**: Environment-specific values
+
+### Deployment Automation
+
+**User Data Script** (`user_data.sh`):
+- Docker and Docker Compose installation
+- AWS CLI setup
+- ECR authentication
+- Automated service deployment
+- Logging and error handling
+- Service health monitoring
+
+## Data Architecture
+
+### Database Design
+
+#### 1. PostgreSQL (Auth Service)
+- **Database**: `auth_service_db`
+- **Tables**: Users, roles, permissions
+- **Features**: ACID compliance, relational integrity
+- **Port**: 5432
+
+#### 2. MongoDB (Driver & Trip Services)
+- **Databases**: `driver-db`, `trip-db`
+- **Collections**: Drivers, trips, locations, bookings
+- **Features**: Document-based, horizontal scaling
+- **Port**: 27017
+- **Authentication**: admin/admin123
+
+#### 3. Redis (Caching Layer)
+- **Purpose**: Session storage, JWT token blacklisting, temporary data
+- **Configuration**: Password-protected (123456)
+- **Port**: 6379
+
+### Message Queue Architecture
+
+#### Apache Kafka
+- **Purpose**: Event-driven communication between services
+- **Port**: 29092 (internal), 9092 (external)
+- **Zookeeper**: Coordination service (Port 2181)
+
+**Event Flow**:
+```
+Auth Service → Kafka → [Driver Service, Trip Service]
+Driver Service → Kafka → [Trip Service, Auth Service]
+Trip Service → Kafka → [Driver Service, Auth Service]
+```
+
+## Containerization & Orchestration
+
+### Docker Configuration
+
+**Individual Dockerfiles**:
+- Each service has its own optimized Dockerfile
+- Multi-stage builds for reduced image size
+- Java 17 runtime environment
+
+**Docker Compose** (`IaC/docker-compose.yml`):
+```yaml
+services:
+  auth-service: Port 3030
+  driver-service: Port 3031
+  trip-service: Port 3032
+  postgres: Port 5432
+  mongodb: Port 27017
+  redis: Port 6379
+  kafka: Port 29092
+  zookeeper: Port 2181
+```
+
+### Container Registry (ECR)
+- Automated image builds and pushes
+- Version tagging for rollbacks
+- Regional repositories for performance
 
 ---
 ### ⚙️ 1.3 Nguyên tắc Thiết kế
