@@ -10,7 +10,7 @@ Giai đoạn này tập trung xây dựng nền tảng **core system** gồm 3 m
 
 ---
 
-### 📊 1.1 Sơ đồ Kiến trúc
+## 📊 1.1 Sơ đồ Kiến trúc
 
 ![Architecture Diagram](Image/BASIC.png)
 Sơ đồ thể hiện:
