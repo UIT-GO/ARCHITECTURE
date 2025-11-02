@@ -23,7 +23,38 @@ Sơ đồ thể hiện:
 - Các giao tiếp sử dụng: RestAPI, HTTP/HTTPS, WEBSOCKET
 
 ---
-
+## 1.2 Architecture Cloud Diagram
+```
+┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐
+│   Frontend Client   │    │   Mobile App        │    │   External APIs     │
+└─────────┬───────────┘    └─────────┬───────────┘    └─────────┬───────────┘
+          │                          │                          │
+          └──────────────────────────┼──────────────────────────┘
+                                     │
+              ┌─────────────────────────────────────────────┐
+              │              Load Balancer / Gateway        │
+              └─────────────────┬───────────────────────────┘
+                                │
+    ┌───────────────────────────┼───────────────────────────┐
+    │                           │                           │
+    │                     AWS EC2 Instance                  │
+    │                                                       │
+    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │
+    │  │Auth Service │  │Driver Service│  │Trip Service │  │
+    │  │  Port 3030  │  │  Port 3031  │  │  Port 3032  │  │
+    │  └─────────────┘  └─────────────┘  └─────────────┘  │
+    │                                                       │
+    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │
+    │  │ PostgreSQL  │  │   MongoDB   │  │    Redis    │  │
+    │  │  Port 5432  │  │  Port 27017 │  │  Port 6379  │  │
+    │  └─────────────┘  └─────────────┘  └─────────────┘  │
+    │                                                       │
+    │  ┌─────────────────┐  ┌─────────────────────────────┐ │
+    │  │     Kafka       │  │       Zookeeper             │ │
+    │  │   Port 29092    │  │      Port 2181              │ │
+    │  └─────────────────┘  └─────────────────────────────┘ │
+    └───────────────────────────────────────────────────────┘
+```
 ### 🧩 1.2 Mô tả Thành phần
 
 # 🧭 API Gateway
@@ -191,8 +222,10 @@ Dịch vụ này kết nối **UserService** (người dùng), **DriverService**
 
 Ứng dụng **chỉ gửi vị trí mới** lên `DriverService` khi **một trong hai điều kiện sau** được thỏa mãn:
 
-1. **Đã trôi qua hơn 3–5 giây** kể từ lần gửi cuối  
-2. **Hoặc** tài xế đã di chuyển **hơn 10–20 mét** so với vị trí trước đó  
+1. **Đã trôi qua hơn 3–5 giây** kể từ lần gửi cuối
+    Hình này là nguyên tắc chu kỳ thời gian gửi
+   ![Cập nhật vị trí](Image/logiccapnhatvitri.png)
+3. **Hoặc** tài xế đã di chuyển **hơn 10–20 mét** so với vị trí trước đó  
 
 > 👉 Nhờ vậy, khi tài xế đứng yên (kẹt xe, dừng đèn đỏ...), ứng dụng **không gửi liên tục** dữ liệu trùng lặp.
 
