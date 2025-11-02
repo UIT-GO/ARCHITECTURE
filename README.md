@@ -13,12 +13,12 @@ Giai đoạn này tập trung xây dựng nền tảng **core system** gồm 3 m
 ### 📊 1.1 Sơ đồ Kiến trúc
 
 ![Architecture Diagram](Image/BASIC.png)
-Sơ đồ cần thể hiện:
+Sơ đồ thể hiện:
 - API GATEWAY, Discovery Service
 - UserService
 - TripService
 - DriverService
-- Kafka (hoặc SQS) cho giao tiếp sự kiện
+- Kafka (hoặc SQS, RabbitMQ) cho giao tiếp sự kiện
 - Redis / PostgreSQL / MongoDB làm backend cho từng service
 
 ---
