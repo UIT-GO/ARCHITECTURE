@@ -14,7 +14,7 @@ Giai đoạn này tập trung xây dựng nền tảng **core system** gồm 3 m
 
 ![Architecture Diagram](Image/BASIC.png)
 Sơ đồ cần thể hiện:
-- Application Load Balancer (ALB)
+- API GATEWAY, Discovery Service
 - UserService
 - TripService
 - DriverService
