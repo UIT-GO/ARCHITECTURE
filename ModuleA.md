@@ -101,7 +101,7 @@
 
 1. **Đã trôi qua hơn 3–5 giây** kể từ lần gửi cuối
     Hình này là nguyên tắc chu kỳ thời gian gửi
-   ![Cập nhật vị trí](Image/logiccapnhatvitri.png)
+   ![Cập nhật vị trí](Image/TG.png)
 3. **Hoặc** tài xế đã di chuyển **hơn 10–20 mét** so với vị trí trước đó  
 
 > 👉 Nhờ vậy, khi tài xế đứng yên (kẹt xe, dừng đèn đỏ...), ứng dụng **không gửi liên tục** dữ liệu trùng lặp.
@@ -312,5 +312,6 @@ Chúng em chọn **REST API** cho giai đoạn "bộ xương" ban đầu vì:
 - Giảm đáng kể **độ trễ** và **chi phí mạng**.
 - Cho phép hệ thống đáp ứng yêu cầu **hyper-scale** của Module A.
 - REST ban đầu cho phép chúng em **dựa trên dữ liệu Load Test để quyết định tối ưu**, thay vì tối ưu sớm không cần thiết.
+
 
 
