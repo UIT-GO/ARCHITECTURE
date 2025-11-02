@@ -182,7 +182,8 @@ Dịch vụ này kết nối **UserService** (người dùng), **DriverService**
 | **Giao tiếp nội bộ** | Kafka Event Bus (bất đồng bộ) |
 
 ---
-
+# ĐẶT XE
+![ĐẶT XE](Image/Đặt xe.png)
 ### ⚙️ 1.3 Nguyên tắc Thiết kế
 
 #### 🛰️ Giao tiếp giữa các Service
