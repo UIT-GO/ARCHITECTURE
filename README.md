@@ -384,7 +384,7 @@ services:
 | Messaging | Kafka |
 | Databases | PostgreSQL, MongoDB, Redis |
 | Container | Docker, Docker Compose |
-| Cloud | AWS (ECS/EKS, ALB, ElastiCache, RDS) |
+| Cloud | AWS (EC2/ECR, VPC, AAM) |
 | IaC | Terraform |
 
 ---
