@@ -4,7 +4,7 @@
 
 ### 🎯 Mục tiêu
 Thiết kế quy trình phát triển và vận hành hiệu quả, kiểm soát và tối ưu hóa chi phí cho hệ thống UIT-Go.
-
+### Nơi cập nhật: https://github.com/UIT-GO/IaC
 ---
 
 ## 1️⃣ Thiết kế Nền tảng Tự phục vụ (Self-Service Platform)
