@@ -4,53 +4,6 @@ Tài liệu này trình bày **kiến trúc hệ thống tổng quan** và **ki�
 
 Use case triển khai có trong folder `Image`.
 
----
-
-## 🗂️ Mục lục – UIT-Go System Architecture
-
-1. [Giới thiệu](#giới-thiệu)  
-   1.1 [Mục đích tài liệu](#mục-đích-tài-liệu)  
-   1.2 [Giai đoạn 1: “Bộ Xương”](#giai-đoạn-1-bộ-xương)  
-
-2. [Kiến trúc tổng quan](#kiến-trúc-tổng-quan)  
-   2.1 [Sơ đồ kiến trúc](#sơ-đồ-kiến-trúc)  
-   2.2 [Thành phần hệ thống](#thành-phan-hệ-thống)  
-
-3. [Microservices chính](#microservices-chính)  
-   3.1 [🧭 API Gateway](#api-gateway)  
-   3.2 [🔎 Discovery Service](#discovery-service)  
-   3.3 [👤 Auth Service](#auth-service)  
-   3.4 [🚖 Driver Service](#driver-service)  
-   3.5 [🚘 Trip Service](#trip-service)  
-
-4. [Hạ tầng & triển khai](#hạ-tầng--triển-khai)  
-   4.1 [Infrastructure Architecture (AWS)](#infrastructure-architecture-aws)  
-   4.2 [Terraform Infrastructure as Code](#terraform-infrastructure-as-code)  
-
-5. [Kiến trúc dữ liệu](#kiến-trúc-dữ-liệu)  
-   5.1 [PostgreSQL (Auth Service)](#postgresql-auth-service)  
-   5.2 [MongoDB (Driver & Trip Services)](#mongodb-driver--trip-services)  
-   5.3 [Redis (Caching Layer)](#redis-caching-layer)  
-
-6. [Kiến trúc messaging](#kiến-trúc-messaging)  
-   6.1 [Apache Kafka](#apache-kafka)  
-
-7. [Containerization & Orchestration](#containerization--orchestration)  
-   7.1 [Docker Configuration](#docker-configuration)  
-   7.2 [Docker Compose](#docker-compose)  
-   7.3 [Container Registry (ECR)](#container-registry-ecr)  
-
-8. [Nguyên tắc thiết kế](#nguyên-tắc-thiết-kế)  
-   8.1 [Giao tiếp giữa các service (gRPC & REST)](#giao-tiếp-giữa-các-service-grpc--rest)  
-   8.2 [Database per Service](#database-per-service)  
-   8.3 [Containerization](#containerization)  
-   8.4 [Infrastructure as Code (IaC)](#infrastructure-as-code-iac)  
-   8.5 [Triển khai & CI/CD](#triển-khai--cicd)  
-
-- [Event Flow tổng quan](#event-flow-tổng-quan)  
-- [Công nghệ sử dụng](#công-nghệ-sử-dụng)  
-- [Testing Strategy](#testing-strategy)  
-- [Tác giả & Phiên bản](#tác-giả--phiên-bản)  
 
 ---
 
