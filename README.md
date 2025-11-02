@@ -143,12 +143,43 @@ Dịch vụ này là thành phần trung tâm trong luồng định vị và đi
 
 ---
 
-#### 🧳 TripService
-- **Trách nhiệm:**  
-  - Dịch vụ trung tâm, quản lý toàn bộ vòng đời chuyến đi.  
-  - Xử lý logic tạo chuyến (`CreateTripEvent`), gán tài xế, cập nhật trạng thái (`ACCEPTED`, `ON_TRIP`, `COMPLETED`, ...).  
-- **Cơ sở dữ liệu:** PostgreSQL hoặc MongoDB.  
-- **Event Publisher:** Gửi sự kiện `TripCreated` đến DriverService qua Kafka.
+# 🚘 Trip Service
+
+## 📘 Mô tả
+`TripService` là **trung tâm điều phối** trong hệ thống **UIT-Go**, chịu trách nhiệm quản lý **vòng đời của cuốc xe (Trip Lifecycle)** — từ khi người dùng đặt xe cho đến khi chuyến đi hoàn tất.  
+Dịch vụ này kết nối **UserService** (người dùng), **DriverService** (tài xế), và hệ thống **Kafka Event Bus** để đảm bảo luồng xử lý phi đồng bộ, mở rộng linh hoạt và phản hồi nhanh.
+
+---
+
+## ⚙️ Chức năng chính
+
+- 📍 **Tạo cuốc xe mới:**  
+  Tiếp nhận yêu cầu đặt xe từ người dùng (qua RESTful API).  
+
+- 🔄 **Phát sự kiện "trip_created"** đến Kafka:  
+  Để DriverService xử lý việc tìm tài xế phù hợp (trong bán kính 5km).  
+
+- 🚕 **Nhận sự kiện "trip_accepted"** từ DriverService:  
+  Cập nhật thông tin tài xế vào cuốc xe.  
+
+- 🧾 **Quản lý vòng đời chuyến đi:**  
+  Theo dõi các trạng thái: `PENDING → ACCEPTED → ONGOING → COMPLETED / CANCELED`.
+
+- 💬 **Gửi thông báo cập nhật trạng thái:**  
+  Gửi phản hồi về cho người dùng và tài xế khi có thay đổi.
+
+---
+
+## 🧱 Kiến trúc & Thành phần
+
+| Thành phần | Mô tả |
+|-------------|--------|
+| **Ngôn ngữ** | Java (Spring Boot) |
+| **Database** | MongoDB – lưu thông tin cuốc xe |
+| **Message Broker** | Kafka – trung gian giao tiếp sự kiện giữa Trip và Driver |
+| **API kiểu** | RESTful API (Client ↔ TripService) |
+| **Triển khai** | Docker container |
+| **Giao tiếp nội bộ** | Kafka Event Bus (bất đồng bộ) |
 
 ---
 
