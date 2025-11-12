@@ -126,3 +126,4 @@ Sơ đồ thể hiện các thành phần:
 - **Cost Management:** Tagging tài nguyên và giám sát qua AWS Budgets.
 
 ---
+## 10. Demo unit test và test coverage.
