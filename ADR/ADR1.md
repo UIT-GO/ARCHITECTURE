@@ -51,3 +51,13 @@ Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng b
 |------------|---------|
 | **Tích cực (Benefits)** | **Khả năng chịu tải:** Max Throughput tăng từ 55 req/s lên 1,250 req/s (gấp 22 lần, dùng Kafka/SQS) <br> **Trải nghiệm người dùng:** P95 Latency giảm từ 2,300 ms xuống 48 ms (gần 47 lần) <br> **Nền tảng Tương lai:** Đặt nền móng cho kiến trúc Event-Driven, hỗ trợ Real-time Analytics và Auditing |
 | **Tiêu cực (Drawbacks)** | **Vận hành (Operations):** Yêu cầu đội ngũ kỹ thuật có chuyên môn về Kafka để tối ưu Partitioning và theo dõi Consumer Lag <br> **Tính nhất quán:** Chấp nhận Eventual Consistency cho kết quả đặt xe |
+
+## 5. Load Testing
+### 📊 So sánh Hiệu năng: Baseline (Legacy) vs Optimized (Kafka/Async)
+
+| Chỉ số | Baseline (Legacy) ![Ảnh 1](Image/ADR1/baseline.png) | Optimized (Kafka/Async) ![Ảnh 2](Image/ADR1/optimized.png) | Phân tích Giá trị Kiến trúc |
+|--------|----------------------|--------------------------|----------------------------|
+| **P99 Latency (SLO)** | 62.92 ms | 79.04 ms | **Nghịch lý tốc độ:** Legacy có vẻ nhanh hơn nhưng đây là latency của **Error** (Server từ chối nhanh). Optimized là thời gian xử lý thật sự. |
+| **P95 Latency** | 5.64 ms | 20.96 ms | Tương tự: Legacy trả về lỗi trước khi xử lý → số liệu thấp. Optimized đo thời gian thực (DB Save + Kafka Send). |
+| **Error Rate** | 100.00% | 0.00% | **Chốt hạ độ ổn định:** Legacy thất bại hoàn toàn. Optimized xử lý tất cả yêu cầu mà không lỗi. |
+| **Throughput (RPS)** | ≈ 431 req/s | ≈ 432 req/s | **Khả năng chịu tải ngang nhau:** Cả hai đạt tối đa khả năng phân phối của máy, nhưng Optimized đạt **0% lỗi** và giải phóng thread ngay lập tức. |
