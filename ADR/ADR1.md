@@ -1,10 +1,10 @@
-# 📄 Architecture Decision Record (ADR) 001: Decoupling Luồng Đặt Xe bằng Giao tiếp Bất đồng bộ
+# 📄 Architecture Decision Record (ADR) 001: Decoupling Luồng Đặt Xe bằng Kafka Stream
 
 **Thuộc tính**
 
 | Thuộc tính             | Mô tả |
 |------------------------|-------|
-| **Tiêu đề**            | Sử dụng Message Queue (SQS/Kafka) để chuyển đổi luồng đặt xe sang Bất đồng bộ (Asynchronous) |
+| **Tiêu đề**            | Sử dụng Apache Kafka để chuyển đổi luồng đặt xe sang Bất đồng bộ (Asynchronous) |
 | **Trạng thái**         | Đã Chấp nhận (Accepted) |
 | **Ngày**               | [Ngày hiện tại] |
 | **Người ra quyết định**| [Tên của bạn - Kỹ sư Kiến trúc Hệ thống] |
@@ -13,33 +13,35 @@
 
 ## 1. Bối cảnh (Context)
 
-Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng bộ (Synchronous HTTP)** giữa TripService và DriverService.
+Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng bộ (Synchronous HTTP/REST)**, gây ra tắc nghẽn nghiêm trọng:
 
-- **Vấn đề Latency:** TripService bị blocking trong khi chờ DriverService tìm tài xế và chờ tài xế xác nhận (quá trình có thể kéo dài vài giây).  
-- **Vấn đề Tải:** Dưới tải cao (Flash Sale "Đồng giá 5k"), điều này làm cạn kiệt các connection của TripService, dẫn đến:  
-  - P95 Latency tăng vọt lên 2,300 ms  
-  - Tỷ lệ lỗi (Error Rate) lên đến 18%  
-  - Gây mất doanh thu nghiêm trọng (~\$100/phút)
+- **Vấn đề Tải Đỉnh (Flash Sale):**  
+  Dưới tải cao (dự kiến 50,000 CCU), luồng đồng bộ khiến TripService bị blocking, cạn kiệt connection, dẫn đến:  
+  - Max Throughput chỉ đạt 55 req/s  
+  - Tỷ lệ lỗi 18%
+
+- **Yêu cầu Hyper-scale:**  
+  Để đạt mục tiêu chịu tải tối thiểu 1,500 req/s, cần một giải pháp **Message Queue** có throughput cao và latency thấp để xử lý các event dồn dập trong chiến dịch Flash Sale.
 
 ---
 
 ## 2. Quyết định (Decision)
 
-Áp dụng mô hình **Message Queue** (AWS SQS hoặc Apache Kafka) để tách rời (decouple) luồng xử lý đặt xe giữa TripService và DriverService.
+Áp dụng **Apache Kafka** làm nền tảng Message Broker chính để tách rời (decouple) luồng xử lý đặt xe:
 
-- TripService sẽ tạo đơn hàng với trạng thái **PENDING** và ngay lập tức gửi Event (ví dụ: `TripCreatedEvent`) vào Queue.  
-- TripService trả về cho người dùng **HTTP 202 Accepted** trong vòng < 100ms.  
-- DriverService (Consumer) sẽ nhận Event từ Queue và thực hiện logic tìm/gán tài xế.
+- **TripService (Producer):** tạo record PENDING và gửi event `TripCreatedEvent` vào một **Topic Kafka** chuyên dụng.  
+- **TripService trả về HTTP 202 Accepted** ngay lập tức (Latency < 100 ms).  
+- **DriverService (Consumer):** nhận event từ Topic Kafka và thực hiện logic tìm/gán tài xế.
 
 ---
 
 ## 3. Cân nhắc (Options Considered)
 
-| Phương án                      | Ưu điểm | Nhược điểm |
-|--------------------------------|---------|------------|
-| **A. Giữ HTTP Đồng bộ**         | Đơn giản, dễ debug, đảm bảo tính nhất quán tức thời (Immediate Consistency) | Không thể Scale, Latency cao, Error Rate cao, dễ bị sập dưới tải |
-| **B. Message Queue (Đã chọn)** | Khả năng chịu tải Hyper-scale, giải phóng tài nguyên tức thời | Tính nhất quán cuối cùng (Eventual Consistency), phức tạp hơn khi debug (cần Correlation ID) |
-| **C. Tăng cường HTTP Connection Pool** | Giảm độ trễ một chút | Không giải quyết được bản chất blocking của API |
+| Phương án                        | Ưu điểm | Nhược điểm |
+|----------------------------------|---------|------------|
+| **A. AWS SQS / Azure Service Bus** | Đơn giản, dễ vận hành (Fully Managed), đảm bảo Delivery (At-least-once) | Thông lượng (Throughput) thường thấp hơn Kafka, độ trễ cao hơn, không hỗ trợ Stream Processing |
+| **B. Apache Kafka (Đã chọn)**     | Thông lượng cực cao (>100,000 req/s), độ trễ thấp, hỗ trợ Stream Processing (cần cho tính năng Driver Matching sau này) | Phức tạp về vận hành: cần quản lý Cluster, Partitioning, Replication. Chi phí cao hơn SQS khi dùng bản Managed (Amazon MSK) |
+| **C. Tăng cường HTTP Connection Pool** | Giảm độ trễ một chút | Không giải quyết bản chất blocking, vẫn sập dưới tải đỉnh |
 
 ---
 
@@ -47,5 +49,5 @@ Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng b
 
 | Loại       | Chi tiết |
 |------------|---------|
-| **Tích cực (Benefits)** | **Scalability & Độ ổn định:** Max Throughput tăng từ 55 req/s lên 1,250 req/s (gấp 22 lần) <br> **Trải nghiệm người dùng:** P95 Latency giảm từ 2,300 ms xuống 48 ms (gần 47 lần) <br> **Bảo vệ Doanh thu:** Tỷ lệ lỗi giảm từ 18% xuống 0% |
-| **Tiêu cực (Drawbacks)** | **Tính nhất quán:** Chấp nhận Eventual Consistency (người dùng phải chờ phản hồi kết quả sau khi tài xế chấp nhận) <br> **Hoạt động (Operations):** Cần thiết lập Monitoring và Tracing (Correlation ID) cho Message Queue để theo dõi luồng xử lý |
+| **Tích cực (Benefits)** | **Khả năng chịu tải:** Max Throughput tăng từ 55 req/s lên 1,250 req/s (gấp 22 lần, dùng Kafka/SQS) <br> **Trải nghiệm người dùng:** P95 Latency giảm từ 2,300 ms xuống 48 ms (gần 47 lần) <br> **Nền tảng Tương lai:** Đặt nền móng cho kiến trúc Event-Driven, hỗ trợ Real-time Analytics và Auditing |
+| **Tiêu cực (Drawbacks)** | **Vận hành (Operations):** Yêu cầu đội ngũ kỹ thuật có chuyên môn về Kafka để tối ưu Partitioning và theo dõi Consumer Lag <br> **Tính nhất quán:** Chấp nhận Eventual Consistency cho kết quả đặt xe |
