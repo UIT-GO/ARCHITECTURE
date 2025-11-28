@@ -49,23 +49,62 @@ Kế hoạch này tập trung vào 3 nhiệm vụ chính:
 
 ### 2.2. Nhiệm vụ 2: Kiểm chứng Thiết kế bằng Load Testing
 
-**Mục tiêu:** Xây dựng kịch bản (sử dụng k6), tìm điểm nghẽn (bottleneck), và đo lường giới hạn (RPS) của hệ thống  
+**Mục tiêu:**  
+Xây dựng kịch bản (**k6**), tìm điểm nghẽn (bottleneck) của SUT (System Under Test), và đo lường giới hạn (RPS) của hệ thống.
 
-**Các bước thực hiện (Tuần 10 & 12):**  
+---
 
-1. **Chọn công cụ:** Sử dụng **k6** hoặc **JMeter**  
+#### ⚠️ Lưu ý về môi trường
+- Máy Load Generator local: **8 core / 16GB RAM** → chỉ phù hợp cho Smoke Test hoặc kiểm tra chức năng dưới tải thấp.  
+- Để đạt mục tiêu **hyper-scale (1000+ VUs)**, nhóm triển khai Load Testing theo 2 giai đoạn:
 
-2. **Thiết kế Kịch bản 1 (Đặt xe - "Ramp-up VUs"):**  
-   - Mô phỏng **1000 Virtual Users** tăng dần, đồng thời gọi API đặt xe của TripService.  
-   - **Đo lường:** P99 Latency, Tỷ lệ lỗi (Error Rate), Độ sâu hàng đợi (Queue Depth) của SQS.  
+---
 
-3. **Thiết kế Kịch bản 2 (Cập nhật vị trí - "Write-heavy"):**  
-   - Mô phỏng **10.000 VUs** liên tục gửi vị trí mới (ví dụ: mỗi 5 giây).  
-   - **Đo lường:** P99 Latency, Tỷ lệ lỗi, CPU Utilization của Redis/DynamoDB.  
+#### Giai đoạn A: Baseline & Tối ưu trên Môi trường Giới hạn (Tuần 10)
 
-4. **Thực thi:**  
-   - **Lần 1 (Tuần 10):** Chạy test trên "Bộ Xương" (chưa tối ưu) để lấy số liệu **Baseline** và tìm điểm nghẽn.  
-   - **Lần 2 (Tuần 12):** Chạy lại chính xác kịch bản trên hệ thống đã được tối ưu.  
+**Mục đích:** Xác định baseline và điểm nghẽn ban đầu của kiến trúc "Bộ Xương" (chưa tối ưu).
+
+##### Kịch bản 1 — Đặt xe (Functional Test)
+- Mô phỏng **50 → 100 Virtual Users** tăng dần.  
+- **Đo lường:**  
+  - P95 Latency  
+  - Tỷ lệ lỗi (Error Rate) → kiểm tra tính ổn định.
+
+##### Kịch bản 2 — Cập nhật vị trí (Smoke Test)
+- Mô phỏng **200 → 300 VUs** liên tục gửi vị trí mới.  
+- **Đo lường:**  
+  - CPU Load Generator → xác định giới hạn máy test.  
+  - CPU CSDL / Redis → tìm điểm nghẽn đầu tiên.
+
+**Sản phẩm:** Báo cáo **Baseline**, làm căn cứ cho Tối ưu hóa (Nhiệm vụ 3).
+
+---
+
+#### Giai đoạn B: Target Scale Testing (Tuần 13)
+
+**Mục đích:** Kiểm chứng khả năng chịu tải **hyper-scale** của hệ thống đã tối ưu (Caching, Auto Scaling,…).
+
+**Yêu cầu:**  
+- Bắt buộc sử dụng **Load Testing phân tán** (Distributed), ví dụ:  
+  - JMeter Master-Slave trên 4–5 AWS t2.medium instances  
+  - Hoặc dịch vụ Cloud Load Testing
+##### Kịch bản 1 — Đặt xe (Target Scale)
+- Mô phỏng **1,000 Virtual Users** hoặc đủ tải đạt **500 req/s**.  
+- **Đo lường:**  
+  - P99 Latency  
+  - Error Rate  
+  - Queue Depth của SQS
+
+##### Kịch bản 2 — Cập nhật vị trí (Write-heavy Scale)
+- Mô phỏng **10,000 VUs** hoặc đủ tải đạt **>1,000 req/s**.  
+- **Đo lường:**  
+  - Error Rate  
+  - CPU Redis/DynamoDB  
+  - Throughput tối đa (req/s)
+
+**Sản phẩm:**  
+- Biểu đồ **Before vs After Optimization**: Latency, Error Rate, Throughput, CPU/Memory  
+- Chứng minh giá trị của kiến trúc đã thiết kế.
 
 ---
 
