@@ -1,0 +1,121 @@
+GIAI ĐOẠN 1: NÂNG CẤP SƠ ĐỒ KIẾN TRÚC (QUAN TRỌNG NHẤT)
+Bạn cần vẽ lại sơ đồ mới (dùng Draw.io/Lucidchart) dựa trên sơ đồ cũ nhưng thay đổi các điểm sau:
+
+Bước 1: Vẽ khung Hạ tầng (Multi-AZ)
+Sơ đồ cũ: Không có khái niệm vùng/zone.
+
+Sơ đồ mới:
+
+Vẽ một khung lớn bao quanh tất cả, đặt tên: Region: Singapore (ap-southeast-1).
+
+Bên trong khung lớn, chia làm 2 khung nhỏ (hoặc nét đứt), đặt tên: Availability Zone A và Availability Zone B.
+
+Ý nghĩa: Đây là nền tảng của High Availability.
+
+Bước 2: Thêm lớp Cân bằng tải (Load Balancing)
+Sơ đồ cũ: Customer/Driver trỏ thẳng vào API Gateway.
+
+Sơ đồ mới:
+
+Đặt icon Application Load Balancer (ALB) đứng trước API Gateway.
+
+Mũi tên từ Customer/Driver -> ALB -> API Gateway.
+
+Ý nghĩa: ALB sẽ điều hướng traffic sang Zone A hoặc B nếu một bên bị sập.
+
+Bước 3: Nhân bản Service (Compute Layer)
+Sơ đồ cũ: Chỉ có 1 hộp TripService, 1 hộp DriverService. (Nếu hộp này chết -> Hệ thống chết).
+
+Sơ đồ mới:
+
+Vẽ TripService ở cả Zone A và Zone B.
+
+Vẽ DriverService ở cả Zone A và Zone B.
+
+Tương tự với UserService.
+
+Vẽ một khung bao quanh các service này ghi: Auto Scaling Group.
+
+Ý nghĩa: Đảm bảo luôn có ít nhất 2 servers chạy song song.
+
+Bước 4: Nâng cấp Database (Data Layer) - Phần ăn điểm
+Trong sơ đồ cũ các bạn dùng 3 loại DB: Postgres, Mongo, Redis. Hãy vẽ lại như sau:
+
+PostgreSQL (UserService):
+
+Vẽ icon DB ở Zone A ghi: Primary (Master).
+
+Vẽ icon DB ở Zone B ghi: Standby (Replica).
+
+Vẽ mũi tên 2 chiều giữa chúng ghi: Synchronous Replication.
+
+MongoDB (TripService):
+
+Vẽ tương tự: Primary (Zone A) - Secondary (Zone B).
+
+Ghi chú: Replica Set.
+
+Redis (DriverService):
+
+Vẽ Redis Cluster trải dài cả 2 Zone.
+
+Ý nghĩa: Dữ liệu không bao giờ mất dù cháy cả một Data Center.
+
+GIAI ĐOẠN 2: THỂ HIỆN RESILIENCE (TRONG BÁO CÁO)
+Trên sơ đồ mới, bạn hãy thêm các ghi chú (Annotations) để thầy thấy bạn có xử lý lỗi dây chuyền:
+
+Vị trí: Ở mũi tên kết nối giữa TripService và DriverService.
+
+Hành động: Vẽ thêm một ký hiệu (ví dụ: hình cái khiên hoặc tia sét) ghi chú: "Circuit Breaker Pattern".
+
+Giải thích trong báo cáo: "Tại điểm kết nối này, nhóm áp dụng Circuit Breaker để ngắt kết nối nếu DriverService phản hồi chậm quá 2 giây, ngăn chặn TripService bị treo."
+
+GIAI ĐOẠN 3: SƠ ĐỒ DISASTER RECOVERY (DR) - PILOT LIGHT
+Bạn cần vẽ thêm Sơ đồ thứ 2 (nhỏ hơn sơ đồ chính) để mô tả kế hoạch DR.
+
+Vẽ 2 vùng tách biệt: Region Singapore (Hệ thống chính) và Region Tokyo (Hệ thống dự phòng).
+
+Tại Tokyo:
+
+Vẽ Database (Postgres/Mongo) và ghi: Read Replica.
+
+Vẽ mũi tên từ Singapore sang Tokyo ghi: Async Replication (Cross-Region).
+
+Vẽ các Service (Trip/Driver) nhưng làm mờ đi hoặc ghi chú: "Server OFF / Min Capacity".
+
+Ghi chú quy trình: "Khi Singapore sập -> Kích hoạt Auto Scaling tại Tokyo -> Promote DB -> Hệ thống sống lại."
+
+TỔNG HỢP: DANH SÁCH VIỆC CẦN LÀM NGAY
+Để hoàn thành Module B từ sơ đồ ban đầu của bạn, hãy làm theo checklist này:
+
+Vẽ lại sơ đồ kiến trúc (Architecture Diagram):
+
+[ ] Thêm khung Availability Zones.
+
+[ ] Thêm Load Balancer.
+
+[ ] Nhân đôi các Service và Database sang 2 Zones.
+
+[ ] Lưu ảnh mới tên ARCHITECTURE_MULTI_AZ.png.
+
+Chạy Script Demo Chaos (Video 1):
+
+[ ] Tải file chaos_sim.py mình gửi ở trên.
+
+[ ] Quay video màn hình chạy script (thấy log đỏ ngắt kết nối).
+
+[ ] Mục đích: Chứng minh cái "Circuit Breaker" bạn vẽ trên sơ đồ là có thật (dù là giả lập).
+
+Làm Slide/Báo cáo DR (Video 2):
+
+[ ] Mở sơ đồ DR (Tokyo/Singapore) lên.
+
+[ ] Thuyết trình quy trình bật server tại Tokyo.
+
+[ ] Mục đích: Chứng minh bạn có kế hoạch cứu dữ liệu.
+
+Viết Báo cáo (REPORT.md):
+
+[ ] Copy phần phân tích "Single-AZ vs Multi-AZ" vào.
+
+[ ] Chèn 2 cái sơ đồ vừa vẽ vào.
