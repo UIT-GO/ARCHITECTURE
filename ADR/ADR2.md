@@ -60,8 +60,8 @@ Tính năng **Cập nhật vị trí tài xế (Location Update)** là luồng *
 Nguyên nhân: P99 Latency không thể đáp ứng yêu cầu vì GC Pause (Dọn rác) và Context Switching(Việc chuyển đổi giữa 100 luồng trên giới hạn 0.5 vCPU cũng gây ra overhead)
 | Kịch bản | P99 Latency | Ý nghĩa |
 |---------|-------------|---------|
-| **Legacy (Cũ)** | **≈ 7.04 s** | Chứng minh hệ thống cũ nghẽn nặng, xử lý đồng bộ, blocking. |
-| **Tối ưu hóa (Right-Sizing)** | **≈ 203.39 ms** | Sau khi áp dụng Kafka Async + Right-Sizing → Latency giảm **~34 lần**. |
-| **Thử nghiệm thất bại (Vertical Scaling Failed)** | **≈ 1.82 s** | Dùng để chứng minh: tăng cấu hình CPU/RAM **không giúp cải thiện** vì nghẽn ở logic blocking, không phải compute. |
+| **Legacy (Cũ)** | **≈ 1.01 s** | Chứng minh hệ thống cũ nghẽn nặng, xử lý đồng bộ, blocking. |
+| **Tối ưu hóa (Right-Sizing)** | **≈ 229.15 ms** | Sau khi áp dụng Right-Sizing → Latency giảm **~5 lần**. |
+| **Thử nghiệm thất bại (Scale theo chiều ngang)** | **≈ 229.15 ms** | Dùng để chứng minh: Giảm tải giúp 5 lần|
 
 ---
