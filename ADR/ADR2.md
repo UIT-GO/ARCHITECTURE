@@ -68,5 +68,12 @@ Tính năng **Cập nhật vị trí tài xế (Location Update)** là luồng *
 
 ---
  ### 📊 Scale theo chiều dọc
+ - Giải pháp: vCPU=2, Memmory = 2G.
  ![Mỗi instance xử lý 500 RPS](../Image/ADR2/2vCPU,2G.jpg)
-Nguyên nhân: P99 Latency không thể đáp ứng yêu cầu vì GC Pause (Dọn rác) và Context Switching(Việc chuyển đổi giữa 100 luồng trên giới hạn 0.5 vCPU cũng gây ra overhead)
+
+| Kịch bản | P99 Latency | Ý nghĩa |
+|---------|-------------|---------|
+| **Legacy (Cũ)** | **≈  229.15 ms** | Chứng minh hệ thống cũ nghẽn nặng, xử lý đồng bộ, blocking. |
+| **Tối ưu hóa (Right-Sizing)** | **≈ 203.31 ms** | Sau khi áp dụng Right-Sizing → Latency giảm 26ms. |
+| **Thử nghiệm thất bại (Scale theo chiều dọc)** | **≈ 203.31 ms** | Dùng để chứng minh: Giảm 26ms.|
+
