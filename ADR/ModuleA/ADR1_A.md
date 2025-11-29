@@ -53,7 +53,7 @@ Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng b
 | **Tiêu cực (Drawbacks)** | **Vận hành (Operations):** Yêu cầu đội ngũ kỹ thuật có chuyên môn về Kafka để tối ưu Partitioning và theo dõi Consumer Lag <br> **Tính nhất quán:** Chấp nhận Eventual Consistency cho kết quả đặt xe |
 
 ## 5. Load Testing
-- P99 Latency (202 Accepted)< 100 ms
+- P99 Latency (202 Accepted) < 100 ms
 ### 📊 So sánh Hiệu năng: Baseline (Legacy) vs Optimized (Kafka/Async)
  Baseline (Legacy)
  ![Ảnh 1](../../Image/ADR1/baseline.jpg)
@@ -96,6 +96,7 @@ Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng b
 - Sizing dựa hoàn toàn vào số liệu load test, không ước lượng.  
 - Scale-out theo replica giúp throughput tăng gần tuyến tính.  
 - Đảm bảo vượt mục tiêu 1500 RPS trong giai đoạn “Scale or Die”.
+
 
 
 
