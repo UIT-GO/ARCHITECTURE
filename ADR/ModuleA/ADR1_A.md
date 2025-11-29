@@ -66,10 +66,12 @@ Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng b
 | **Error Rate** | 100.00% | 0.00% | **Chốt hạ độ ổn định:** Legacy thất bại hoàn toàn. Optimized xử lý tất cả yêu cầu mà không lỗi. |
 | **Throughput (RPS)** | ≈ 431 req/s | ≈ 432 req/s | **Khả năng chịu tải ngang nhau:** Cả hai đạt tối đa khả năng phân phối của máy, nhưng Optimized đạt **0% lỗi** và giải phóng thread ngay lập tức. |
 
+
 ---
 
+
 | Chỉ số | Optimized (Thành công) |
-|--------|---------------------|--------------------------|
+|--------|--------------------------|
 | **Tài nguyên test** | 0.5 vCPU |
 | **Throughput đạt được** | **~432 RPS** |
 | **Hiệu suất đơn vị (RPS/vCPU)** | **864 RPS/vCPU** |
@@ -94,6 +96,7 @@ Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng b
 - Sizing dựa hoàn toàn vào số liệu load test, không ước lượng.  
 - Scale-out theo replica giúp throughput tăng gần tuyến tính.  
 - Đảm bảo vượt mục tiêu 1500 RPS trong giai đoạn “Scale or Die”.
+
 
 
 
