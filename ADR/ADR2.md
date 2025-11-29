@@ -52,3 +52,4 @@ Tính năng **Cập nhật vị trí tài xế (Location Update)** là luồng *
 ## 5. Load Testing
 ### 📊 Sử dụng Blocking I/O + Geo Redis
  ![Ảnh 1](../Image/ADR2/baseline.jpg)
+ -Vì dùng Blocking I/O và 1 instance xử lý cập nhật mà load testing local (vUser = 1000) với resource (8 core và 16GB, với driver service vCPU: 0.5 và Memory: 768M) nên chuyển việc nhận message vị trí sang Non Blocking + Scale intance theo chiều ngang
