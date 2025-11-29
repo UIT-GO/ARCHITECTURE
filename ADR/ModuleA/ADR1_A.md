@@ -68,20 +68,18 @@ Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng b
 
 ---
 
-| Chỉ số | Legacy (Thất bại) | Optimized (Thành công) |
+| Chỉ số | Optimized (Thành công) |
 |--------|---------------------|--------------------------|
-| **Tài nguyên test** | 0.5 vCPU | 0.5 vCPU |
-| **Throughput đạt được** | ~250 RPS | **~432 RPS** |
-| **Hiệu suất đơn vị (RPS/vCPU)** | 500 RPS/vCPU | **864 RPS/vCPU** |
+| **Tài nguyên test** | 0.5 vCPU |
+| **Throughput đạt được** | **~432 RPS** |
+| **Hiệu suất đơn vị (RPS/vCPU)** | **864 RPS/vCPU** |
 
 **Nhận xét:**  
-- Bản tối ưu đạt hiệu suất cao hơn ~72.8%.  
 - Chứng minh hiệu quả của Right-Sizing và Performance Optimization.
-
 
 ### Tính toán Nhu cầu Final (Hyper-scale Sizing)
 
-**Mục tiêu tải:** 1500 RPS  
+**Mục tiêu tải:** 1500 RPS  = 50000 CCU / 30 giây/request
 **Hiệu suất đã chứng minh:** mỗi replica (0.5 vCPU) xử lý ~432 RPS
 
 ### ➤ Số lượng Replica cần thiết
@@ -96,6 +94,7 @@ Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng b
 - Sizing dựa hoàn toàn vào số liệu load test, không ước lượng.  
 - Scale-out theo replica giúp throughput tăng gần tuyến tính.  
 - Đảm bảo vượt mục tiêu 1500 RPS trong giai đoạn “Scale or Die”.
+
 
 
 
