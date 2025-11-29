@@ -46,5 +46,5 @@ Tính năng **Cập nhật vị trí tài xế (Location Update)** là luồng *
 
 | Loại       | Chi tiết |
 |------------|---------|
-| **Tích cực (Benefits)** | **Chi phí (FinOps):** CPU Database giảm từ 95–100% xuống <5%, giảm kích thước DB, tiết kiệm Cloud đáng kể <br> **Hiệu năng Ghi:** Avg Response Time giảm từ 150 ms xuống 2 ms (cải thiện 75 lần) <br> **Hiệu năng Đọc (Tìm kiếm):** Truy vấn tìm tài xế gần User tối ưu từ O(n) xuống O(log n) nhờ Redis GEO |
+| **Tích cực (Benefits)** | **Chi phí (FinOps):** CPU Database giảm từ 95–100% xuống <5%, giảm kích thước DB, tiết kiệm Cloud đáng kể <br> **Hiệu năng Ghi:** Avg Response Time giảm từ nhiều (cải thiện rất nhiều lần lần) <br> **Hiệu năng Đọc (Tìm kiếm):** Truy vấn tìm tài xế gần User tối ưu từ O(n) xuống O(log n) nhờ Redis GEO |
 | **Tiêu cực (Drawbacks)** | **Vận hành (Operations):** Cần quản lý vòng đời dữ liệu Redis và đảm bảo Persistence nếu cần <br> **Phân mảnh Dữ liệu:** Tạo ra hai nguồn dữ liệu (CSDL Quan hệ cho Transaction, Redis cho vị trí) |
