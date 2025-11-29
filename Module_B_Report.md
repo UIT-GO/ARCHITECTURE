@@ -65,6 +65,7 @@ Với vai trò Site Reliability Engineer:
 │  │  │ │                 │ ││  ││ │                 │ │  │       │
 │  │  │ │ • Microservices │ ││  ││ │ • Microservices │ │  │       │
 │  │  │ │ • MongoDB       │ ││  ││ │ • MongoDB       │ │  │       │
+│  │  │ │ • PostgreSQL    │ ││  ││ │ • PostgreSQL    │ │  │       │
 │  │  │ │ • Kafka         │ ││  ││ │ • Kafka         │ │  │       │
 │  │  │ │ • Redis         │ ││  ││ │ • Redis         │ │  │       │
 │  │  │ └─────────────────┘ ││  ││ └─────────────────┘ │  │       │
