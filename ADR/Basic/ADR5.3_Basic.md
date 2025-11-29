@@ -1,4 +1,4 @@
-# ADR 007: Chuyển Đổi Giao Thức Real-time — Từ WebSocket sang gRPC Streaming
+# ADR 005.3: Chuyển Đổi Giao Thức Real-time — Từ WebSocket sang gRPC Streaming (Cập nhật ADR5.2_Basic.md)
 **Trạng thái:** Đã chấp nhận
 
 ---
