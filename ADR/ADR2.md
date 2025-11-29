@@ -68,5 +68,5 @@ Tính năng **Cập nhật vị trí tài xế (Location Update)** là luồng *
 
 ---
  ### 📊 Scale theo chiều dọc
- ![Mỗi instance xử lý 500 RPS](../Image/ADR2/vUser=500.png)
+ ![Mỗi instance xử lý 500 RPS](../Image/ADR2/2vCPU,2G.jpg)
 Nguyên nhân: P99 Latency không thể đáp ứng yêu cầu vì GC Pause (Dọn rác) và Context Switching(Việc chuyển đổi giữa 100 luồng trên giới hạn 0.5 vCPU cũng gây ra overhead)
