@@ -59,6 +59,7 @@ Tính năng **Cập nhật vị trí tài xế (Location Update)** là luồng *
  ![Mỗi instance xử lý 500 RPS](../Image/ADR2/vUser=500.png)
 - Giải pháp: Thêm 1 instance nữa để test tốc độ xử lý.
 - Nguyên nhân: P99 Latency không thể đáp ứng yêu cầu vì GC Pause (Dọn rác) và Context Switching(Việc chuyển đổi giữa 100 luồng trên giới hạn 0.5 vCPU cũng gây ra overhead)
+
 | Kịch bản | P99 Latency | Ý nghĩa |
 |---------|-------------|---------|
 | **Legacy (Cũ)** | **≈ 1.01 s** | Chứng minh hệ thống cũ nghẽn nặng, xử lý đồng bộ, blocking. |
