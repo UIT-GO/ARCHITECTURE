@@ -66,6 +66,36 @@ Hệ thống đặt xe hiện tại (Legacy) sử dụng giao tiếp **đồng b
 | **Error Rate** | 100.00% | 0.00% | **Chốt hạ độ ổn định:** Legacy thất bại hoàn toàn. Optimized xử lý tất cả yêu cầu mà không lỗi. |
 | **Throughput (RPS)** | ≈ 431 req/s | ≈ 432 req/s | **Khả năng chịu tải ngang nhau:** Cả hai đạt tối đa khả năng phân phối của máy, nhưng Optimized đạt **0% lỗi** và giải phóng thread ngay lập tức. |
 
+---
+
+| Chỉ số | Legacy (Thất bại) | Optimized (Thành công) |
+|--------|---------------------|--------------------------|
+| **Tài nguyên test** | 0.5 vCPU | 0.5 vCPU |
+| **Throughput đạt được** | ~250 RPS | **~432 RPS** |
+| **Hiệu suất đơn vị (RPS/vCPU)** | 500 RPS/vCPU | **864 RPS/vCPU** |
+
+**Nhận xét:**  
+- Bản tối ưu đạt hiệu suất cao hơn ~72.8%.  
+- Chứng minh hiệu quả của Right-Sizing và Performance Optimization.
+
+
+### Tính toán Nhu cầu Final (Hyper-scale Sizing)
+
+**Mục tiêu tải:** 1500 RPS  
+**Hiệu suất đã chứng minh:** mỗi replica (0.5 vCPU) xử lý ~432 RPS
+
+### ➤ Số lượng Replica cần thiết
+- replicas = 1500 / 432 = 3.47 replicas
+
+### 👉 Kết luận
+
+- **Cần tối thiểu 4 replicas (mỗi replica 0.5 vCPU).**
+- **Tổng CPU cần thiết:**  4 replicas × 0.5 vCPU = 2 vCPU
+### 💡 Nhận định kỹ thuật
+
+- Sizing dựa hoàn toàn vào số liệu load test, không ước lượng.  
+- Scale-out theo replica giúp throughput tăng gần tuyến tính.  
+- Đảm bảo vượt mục tiêu 1500 RPS trong giai đoạn “Scale or Die”.
 
 
 
