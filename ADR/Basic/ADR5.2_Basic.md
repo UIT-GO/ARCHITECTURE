@@ -1,4 +1,4 @@
-# ADR 006: Lựa Chọn Giao Thức Cập Nhật Vị Trí Tài Xế Real-time
+# ADR 005.2: Lựa Chọn Giao Thức Cập Nhật Vị Trí Tài Xế Real-time (Cập nhật ADR5.1_Basic.md)
 **Trạng thái:** Đã chấp nhận
 
 ---
