@@ -50,6 +50,7 @@ Tính năng **Cập nhật vị trí tài xế (Location Update)** là luồng *
 | **Tiêu cực (Drawbacks)** | **Vận hành (Operations):** Cần quản lý vòng đời dữ liệu Redis và đảm bảo Persistence nếu cần <br> **Phân mảnh Dữ liệu:** Tạo ra hai nguồn dữ liệu (CSDL Quan hệ cho Transaction, Redis cho vị trí) |
 
 ## 5. Load Testing
+### Yêu cầu: P99 Latency < 100ms
 ### 📊 Sử dụng Blocking I/O + Geo Redis
  ![Xử lý 1000 RPS](../Image/ADR2/vUser=1000.jpg)
  - Vì dùng Blocking I/O và 1 instance xử lý cập nhật mà load testing local (vUser = 1000) với resource (8 core và 16GB, với driver service vCPU: 0.5 và Memory: 768M) nên chuyển việc nhận message vị trí sang Non Blocking + Scale intance theo chiều ngang
