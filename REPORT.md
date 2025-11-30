@@ -16,17 +16,30 @@ Hệ thống UIT-Go được xây dựng theo kiến trúc **Microservices Event
 
 ![Architecture Diagram](Image/achitecture.jpg)
 
-#### **Mô tả luồng dữ liệu**
-**Giao thức giao tiếp:**
+#### A. Giao thức Giao tiếp & Gateway (Communication Layer)
 
-- **gRPC Streaming**  
-  Dùng cho luồng cập nhật vị trí thời gian thực giữa Driver App / Customer App và Gateway / DriverService, đảm bảo độ trễ thấp nhất.
+##### **API Gateway**
+Là điểm tiếp nhận duy nhất cho mọi request từ Client (Customer App, Driver App).  
+Gateway đảm nhiệm các chức năng:
 
-- **REST API**  
-  Dùng cho nghiệp vụ quản lý (User Profile, Booking History) qua HTTP/HTTPS.
+- **Routing**: Định tuyến request đến đúng microservice.  
+- **Authentication**: Kiểm tra token, phân quyền người dùng.  
+- **Load Balancing**: Phân phối đều tải đến các instances của service.
 
-- **Message Broker (Kafka)**  
-  Đóng vai trò backbone cho giao tiếp bất đồng bộ, xử lý các sự kiện đặt chuyến, cập nhật trạng thái.
+---
 
-- **Service Discovery**  
-  Các microservices tự động tìm thấy nhau khi hạ tầng mở rộng hoặc thay đổi.
+##### **gRPC Streaming (Bidirectional)**
+Được sử dụng cho các luồng yêu cầu **độ trễ cực thấp** và **liên tục**, bao gồm:
+
+- Cập nhật tọa độ tài xế theo thời gian thực.  
+- Điều phối và xác nhận chuyến đi (Trip Dispatching).
+
+---
+##### **REST API (HTTP/HTTPS)**
+Dùng cho các tác vụ **phi thời gian thực** hoặc **stateless**, ví dụ:
+
+- Đăng ký tài khoản  
+- Quản lý hồ sơ  
+- Xem lịch sử chuyến đi  
+- Thanh toán
+
