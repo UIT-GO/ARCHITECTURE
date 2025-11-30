@@ -183,6 +183,8 @@ aws elbv2 describe-target-health --target-group-arn arn:aws:xxx
 - Traffic 100% chuyển sang AZ-2: **12 giây**  
 - Service availability: **99.97%** (20s downtime trong 24h test)
 
+
+
 ### 4.2. Kịch bản Test 2: Database Primary Failure
 
 **Mục tiêu:** Kiểm chứng MongoDB automatic failover
@@ -197,10 +199,9 @@ docker exec mongodb-secondary mongo --eval "rs.status()"
 ```
 
 **Kết quả đo lường:**
-- Phát hiện primary down: **10 giây**  
-- Election new primary: **15 giây**  
-- Application reconnect: **5 giây**  
-- **Total RTO: 30 giây**
+- Phát hiện primary down:  
+- Election new primary:  
+- Application reconnect:   
 
 ### 4.3. Kịch bản Test 3: Network Partition (Split Brain)
 
