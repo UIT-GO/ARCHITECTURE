@@ -1,4 +1,4 @@
-# ADR 006: Xử lý Tranh chấp Nhận chuyến bằng Redis Atomic Reservation
+# ADR 002: Xử lý Tranh chấp Nhận chuyến bằng Redis Atomic Reservation
 
 ## Trạng thái (Status)
 **Accepted (Design Phase)**
