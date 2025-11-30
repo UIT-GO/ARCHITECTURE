@@ -35,7 +35,7 @@ Hệ thống UIT-Go được xây dựng theo kiến trúc **Microservices Event
 
 ### 1.2. Sơ đồ Hạ tầng (Infrastructure Architecture)
 
-![Architecture Diagram](Image/BASIC.png)
+![Architecture Diagram](Image/overview.jpg)
 
 #### **Mô tả hạ tầng**
 
