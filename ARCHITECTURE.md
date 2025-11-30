@@ -86,7 +86,6 @@ Hệ thống UIT-Go được xây dựng theo kiến trúc **Microservices Event
 #### 🔹 Resilience Patterns
 - **Health Checks** qua `/health`.  
 - **Auto-Failover** khi EC2 node bị down.  
-- **Retry + Timeout Policies** (ở layer gRPC & Kafka).
 
 ---
 
@@ -94,10 +93,8 @@ Hệ thống UIT-Go được xây dựng theo kiến trúc **Microservices Event
 
 **Mục tiêu:** Giảm chi phí, tăng automation hạ tầng.
 
-#### 🔹 Centralized Logging — ELK Stack
-- **Logstash**: Thu log từ microservices và Kafka.  
-- **Elasticsearch**: Lưu + đánh chỉ mục log.  
-- **Kibana**: Visualize log, tạo dashboard theo dõi event.
+#### 🔹 Cloudwatch:
+- Thu log từ microservices và visualize.  
 
 #### 🔹 Infrastructure as Code — Terraform
 > *(Giải thích các file Terraform bạn đã/sẽ làm)*  
