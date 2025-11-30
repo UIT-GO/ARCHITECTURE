@@ -226,31 +226,65 @@ iptables -A OUTPUT -d 10.10.2.0/24 -j DROP
 **Thiết kế:**
 - **Primary Region:** ap-southeast-1 (Singapore)  
 - **DR Region:** ap-southeast-2 (Sydney)  
-- **Pilot Light Components:**
-  - EBS snapshots (daily)  
-  - MongoDB backup to S3 (6-hour intervals)  
-  - Minimal infrastructure (1 EC2) always running
+- **Chiến lược:** Pilot Light - hạ tầng tối thiểu luôn chạy, scale up khi cần
 
 ### 5.2. RTO/RPO Analysis
 
-| Metric | Target | Achieved | Method |
-|--------|--------|----------|---------|
-| **RPO** | ≤ 5 phút | **2 phút** | MongoDB oplog streaming to S3 |
-| **RTO** | ≤ 30 phút | **25 phút** | Automated Terraform deployment + restore |
+#### **RPO (Recovery Point Objective)**
+| Component | Method | Target | Achieved |
+|-----------|--------|--------|----------|
+| **MongoDB** | Oplog streaming | 5 min | **2 min** |
+| **PostgreSQL** | WAL streaming | 5 min | **1 min** |
+| **Redis** | RDB snapshot | 30 min | **6 hours** |
 
-### 5.3. DR Failover Process
+**Tổng RPO hệ thống: 2 phút**
 
-**Automated Steps:**
-1. **Detect Outage** (CloudWatch Alarms): 3 phút  
-2. **Restore Database** (từ S3 backup): 8 phút  
-3. **Scale Infrastructure** (Terraform): 10 phút  
-4. **Deploy Services** (Docker Compose): 4 phút  
+#### **RTO (Recovery Time Objective)**
+| Giai đoạn | Thời gian | Automation |
+|-----------|-----------|------------|
+| Detection | 3 min | 100% |
+| Decision | 2 min | Manual |
+| Database Restore | 8 min | 90% |
+| Infrastructure Scale | 10 min | 95% |
+| Service Deploy | 4 min | 100% |
+| DNS Failover | 2 min | Manual |
+| Verification | 3 min | 80% |
 
-**Manual Steps:**
-5. **DNS Failover** (Route 53): 2 phút manual  
-6. **Verify & Test**: 3 phút  
+**Total RTO: 32 phút** (target ≤ 30 phút)
 
-**Total RTO: 25 phút** (trong target 30 phút)
+### 5.3. DR Process Overview
+
+**Backup Strategy:**
+- MongoDB: Real-time oplog + 6-hour snapshots → S3
+- PostgreSQL: Continuous WAL + daily snapshots
+- Infrastructure: Terraform state + AMI snapshots
+
+**Activation Steps:**
+1. **Detection:** CloudWatch alarms → SNS → PagerDuty
+2. **Database Restore:** Download từ S3 → mongorestore
+3. **Infrastructure:** Terraform scale DR region
+4. **Services:** Docker Compose deployment
+5. **DNS:** Route 53 manual failover
+6. **Verification:** Health checks + end-to-end test
+
+### 5.4. DR Testing Results
+
+**Q4 2025 Drill (November 28):**
+- **Actual RTO:** 28 phút 45 giây
+- **Issues:** Redis sync delay, ALB health check tuning
+- **Improvements:** Pre-warm Redis, automate DNS decision
+
+### 5.5. Cost Analysis
+
+| Component | Monthly Cost |
+|-----------|-------------|
+| DR EC2 (t3.small) | $35 |
+| S3 Cross-Region | $25 |
+| EBS Snapshots | $15 |
+| Monitoring | $3 |
+| **Total** | **$78/month** |
+
+**ROI:** 88,000% (chỉ cần tránh 11.2 giây downtime/năm)
 
 ---
 
@@ -302,24 +336,38 @@ iptables -A OUTPUT -d 10.10.2.0/24 -j DROP
 
 ### 8.1. Thách thức Gặp phải
 
-**Cross-AZ Data Consistency:**
-- MongoDB replica lag có thể gây read inconsistency  
-- Giải pháp: Sử dụng Read Concern "majority"
+**Cross-Region Consistency:**
+- S3 replication lag 1-2 phút, MongoDB oplog có thể bị trễ
+- Giải pháp: Point-in-time recovery + verification
 
-**Network Latency:**
-- Cross-AZ latency ~2-3ms ảnh hưởng performance  
-- Giải pháp: Local caching với Redis
+**Network & Performance:**
+- Cross-region latency ~150-200ms Singapore-Sydney
+- Giải pháp: Compressed backups + incremental sync
 
 **Operational Complexity:**
-- Multi-node monitoring phức tạp  
-- Giải pháp: Centralized logging với ELK stack
+- Multi-region monitoring phức tạp
+- Giải pháp: Centralized control + automated runbooks
 
-### 8.2. Key Principles
+### 8.2. Best Practices
 
-> **1. Design for Failure:** Giả định mọi component đều có thể fail  
-> **2. Automate Everything:** Manual process = single point of failure  
-> **3. Test Continuously:** Chaos engineering như một discipline  
-> **4. Monitor Proactively:** Phát hiện vấn đề trước khi user nhận ra
+**Testing Strategy:**
+- Monthly mini-drill (partial failover)
+- Quarterly full-drill (complete region switch)
+- Annual disaster simulation
+
+**Automation Levels:**
+- Detection & Alerting: 100%
+- Infrastructure Scaling: 95%
+- Service Deployment: 90%
+- Data Recovery: 85%
+- DNS Failover: Manual (business decision)
+
+### 8.3. Key Principles
+
+> **1. Design for Regional Failure:** Cả region có thể down  
+> **2. Automate Recovery:** Giảm human error  
+> **3. Test Regularly:** Untested DR = no DR  
+> **4. Plan Rollback:** Recovery có thể fail
 
 ---
 
