@@ -39,7 +39,8 @@ Sơ đồ thể hiện:
 - DriverService
 - Kafka cho giao tiếp sự kiện
 - Redis / PostgreSQL / MongoDB làm backend cho từng service
-- Các giao tiếp sử dụng: RestAPI, HTTP/HTTPS, WEBSOCKET
+- ELK Stack
+- Các giao tiếp sử dụng: RestAPI, HTTP/HTTPS, gRPC Streaming
 
 ## 🧩 1.2 Mô tả Thành phần
 
