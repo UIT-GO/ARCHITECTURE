@@ -102,10 +102,10 @@ Hệ thống UIT-Go được phân tích và thiết kế qua 3 module chuyên s
 ---
 
 ### 🎯 **Tổng hợp Business Impact**
-- **Technical:** Scalable, reliable, cost-effective platform
-- **Financial:** ROI trung bình 2,000%+ across modules  
-- **Operational:** Self-healing system với minimal manual intervention
-- **Strategic:** Ready for hyper-growth với sustainable cost structure
+- **Technical:** Microservices architecture với event-driven communication
+- **Operational:** Infrastructure as Code với automated deployment pipelines  
+- **Reliability:** Multi-AZ deployment với fault tolerance mechanisms
+- **Strategic:** Cloud-native design patterns cho sustainable scaling
 
 ---
 
@@ -123,11 +123,11 @@ Hệ thống UIT-Go được thiết kế dựa trên nguyên tắc **"Scale or 
 #### **Trade-off Analysis:**
 | Khía cạnh | Legacy (Sync) | Kafka (Async) | Đánh giá |
 |-----------|---------------|---------------|----------|
-| **Throughput** | 55 req/s | **1,250 req/s** | ✅ Tăng 22x |
-| **Latency P95** | 2,300ms | **48ms** | ✅ Giảm 47x |
-| **Error Rate** | 18% | **0%** | ✅ Hoàn hảo |
-| **Complexity** | Thấp | **Cao hơn** | ⚠️ Trade-off chấp nhận được |
-| **Consistency** | Strong | **Eventual** | ⚠️ Chấp nhận cho UX tốt hơn |
+| **Throughput** | Giới hạn bởi blocking I/O | **Cao hơn đáng kể** | ✅ Non-blocking architecture |
+| **Latency** | Cao do cascading calls | **Thấp hơn nhiều** | ✅ Decoupled processing |
+| **Error Rate** | Cao khi overload | **Gần như zero** | ✅ Queue buffering |
+| **Complexity** | Đơn giản | **Phức tạp hơn** | ⚠️ Distributed system complexity |
+| **Consistency** | Strong | **Eventual** | ⚠️ CAP theorem trade-off |
 
 **Kết luận:** *"Không được để mất request của khách hàng"* - Eventual consistency chấp nhận được để đảm bảo hệ thống luôn nhận được yêu cầu.
 
@@ -138,17 +138,17 @@ Hệ thống UIT-Go được thiết kế dựa trên nguyên tắc **"Scale or 
 **Quyết định:** Multi-AZ với ALB và database replication
 
 #### **Trade-off Analysis:**
-| Khía cạnh | Single-AZ | Multi-AZ | Business Impact |
-|-----------|-----------|----------|-----------------|
-| **Cost** | $170/tháng | **$357/tháng** | ⚠️ Tăng 110% |
-| **Availability** | 99.5% | **99.9%** | ✅ Giảm 21.6 phút downtime/tháng |
-| **RTO** | 15-30 phút | **< 30 giây** | ✅ Tự động failover |
-| **RPO** | Có thể mất dữ liệu | **< 2 phút** | ✅ MongoDB Replica Set |
+| Khía cạnh | Single-AZ | Multi-AZ | Architectural Impact |
+|-----------|-----------|----------|----------------------|
+| **Cost** | Thấp | **Cao hơn đáng kể** | ⚠️ Redundancy overhead |
+| **Availability** | Có SPOF | **Fault tolerant** | ✅ Eliminate single points of failure |
+| **RTO** | Phụ thuộc manual recovery | **Tự động failover** | ✅ Automated disaster recovery |
+| **RPO** | Risk mất dữ liệu | **Data replication** | ✅ Continuous backup strategy |
 
-**ROI Calculation:**  
-- Investment: +$187/tháng  
-- Business Protection: $5,000/phút × 21.6 phút = **$108,000/tháng**  
-- **ROI: 5,700%**
+**Design Principle:**  
+- **Availability over Cost:** Chấp nhận chi phí cao hơn để đạt fault tolerance  
+- **Automated Recovery:** Giảm thiểu human intervention trong disaster scenarios  
+- **Geographic Distribution:** Isolation failure domains
 
 ---
 
@@ -156,14 +156,14 @@ Hệ thống UIT-Go được thiết kế dựa trên nguyên tắc **"Scale or 
 **Bối cảnh:** Cần balance giữa cost, performance và operational complexity  
 **Quyết định:** EC2 cho core services + ECS Fargate cho elastic workloads
 
-#### **Platform Comparison Analysis:**
-| Tiêu chí | EKS | ECS Fargate | EC2 + Docker | Hybrid (Chọn) |
-|----------|-----|-------------|--------------|---------------|
-| **Monthly Cost** | $193 | $238 | $195 | **$240** |
-| **Learning Curve** | 3 tháng | 2 tuần | 1 tháng | **1.5 tháng** |
-| **Scalability** | Excellent | Good | Fair | **Good** |
-| **Performance** | Good | Good | Excellent | **Excellent** |
-| **Operational Overhead** | High | Low | Medium | **Medium** |
+#### **Architectural Pattern Analysis:**
+| Tiêu chí | Container Orchestration | Serverless Containers | Virtual Machines | Hybrid Approach |
+|----------|-------------------------|---------------------|------------------|------------------|
+| **Resource Efficiency** | Tối ưu density | Pay-per-use model | Predictable cost | **Balanced approach** |
+| **Learning Curve** | Steep | Moderate | Familiar | **Gradual adoption** |
+| **Scalability Pattern** | Horizontal auto-scaling | Event-driven scaling | Manual/script scaling | **Selective optimization** |
+| **Performance** | Container overhead | Cold start latency | Native performance | **Best of both worlds** |
+| **Operational Model** | DevOps intensive | Managed service | Infrastructure management | **Layered complexity** |
 
 **Strategic Rationale:**
 - **Phase 1:** EC2 cho stability và performance core services  
@@ -176,19 +176,19 @@ Hệ thống UIT-Go được thiết kế dựa trên nguyên tắc **"Scale or 
 **Bối cảnh:** Manual deployment gây bottleneck (2-3 ngày/service)  
 **Quyết định:** Infrastructure as Code với Terraform Modules + GitHub Actions
 
-#### **ROI Analysis:**
-| Khía cạnh | Before | After | Impact |
-|-----------|--------|-------|--------|
-| **Deployment Time** | 2-3 ngày | **30 phút** | ✅ 95% reduction |
-| **DevOps Intervention** | 80% deployments | **20%** | ✅ 60% self-service |
-| **Cost per Deploy** | $1,500 | **$50** | ✅ 30x cheaper |
-| **Monthly OpEx** | $15,000 | **$4,000** | ✅ $11,000 savings |
+#### **Automation Benefits Analysis:**
+| Khía cạnh | Manual Process | Automated Pipeline | Architectural Benefit |
+|-----------|----------------|-------------------|----------------------|
+| **Deployment Velocity** | Slow, error-prone | **Consistent & fast** | ✅ Continuous delivery principles |
+| **Human Dependency** | High manual intervention | **Self-service model** | ✅ Developer empowerment |
+| **Process Consistency** | Variable outcomes | **Standardized workflows** | ✅ Infrastructure as Code |
+| **Operational Efficiency** | Labor intensive | **Automated pipelines** | ✅ DevOps culture adoption |
 
-**Trade-off:**
-- **Investment:** $20,000 (platform development + training)  
-- **Monthly Savings:** $11,000  
-- **Break-even:** 1.8 tháng  
-- **ROI Year 1:** 302%
+**Design Trade-off:**
+- **Initial Complexity:** Platform development overhead  
+- **Long-term Benefits:** Sustainable development velocity  
+- **Cultural Shift:** From manual to automated operations  
+- **Scalability Foundation:** Self-service infrastructure
 
 ---
 
@@ -204,18 +204,18 @@ Hệ thống UIT-Go được thiết kế dựa trên nguyên tắc **"Scale or 
 | **Real-time Location** | Redis GEO | In-memory speed (<1ms), geospatial queries | Data volatility |
 | **Search & Analytics** | Elasticsearch | Full-text search, log aggregation | Resource intensive |
 
-**Performance Results:**
-- **Location queries:** 50ms → **<1ms** (Redis GEO)  
-- **Database CPU:** Giảm 90% nhờ Redis caching  
-- **Search response:** **Sub-second** với Elasticsearch
+**Architectural Benefits:**
+- **Spatial Queries:** In-memory geospatial indexing pattern  
+- **Database Load:** Cache-aside pattern giảm database pressure  
+- **Search Performance:** Full-text indexing với distributed search
 
 ---
 
 ### 📊 **Tổng hợp Strategic Trade-offs**
 
-#### **Chi phí vs Hiệu năng:**
-- **Chấp nhận tăng 110% infrastructure cost** để đạt 99.9% availability  
-- **ROI trung bình 2,000%+** qua cost savings và revenue protection
+- **Chi phí vs Hiệu năng:**
+- **Trade-off acceptable cost increase** cho fault tolerance và high availability  
+- **Long-term value creation** through operational efficiency và risk mitigation
 
 #### **Complexity vs Maintainability:**
 - **Microservices complexity** đổi lấy independent scaling và development velocity  
@@ -254,9 +254,9 @@ Hệ thống UIT-Go được thiết kế dựa trên nguyên tắc **"Scale or 
 **Bài học:** *Start simple, scale gradually* - Redis cluster phức tạp cuối cùng chỉ cần single instance.
 
 #### **🛡️ Module B - Reliability:**  
-- **DR Testing Fear:** Ngại test disaster recovery trên production
-- **Multi-AZ Complexity:** Cross-AZ latency +2-3ms, cost tăng 150%
-- **Documentation Gap:** Runbooks thiếu chi tiết gây panic khi incident
+- **DR Testing Fear:** Ngại test disaster recovery trên production environment
+- **Multi-AZ Complexity:** Cross-AZ network overhead và cost implications
+- **Documentation Gap:** Runbooks thiếu chi tiết gây operational challenges
 
 **Bài học:** *Design for graceful failure* - Thay vì tránh failures, handle chúng elegantly.
 
@@ -283,9 +283,9 @@ Hệ thống UIT-Go được thiết kế dựa trên nguyên tắc **"Scale or 
 
 ### 🚀 **Điều sẽ làm khác nếu restart**
 
-- **Architecture:** Start với ECS Fargate thay vì EC2, implement circuit breakers sớm
-- **Process:** Infrastructure as Code mandatory, không allow manual changes  
-- **Culture:** Cross-training team members, blameless post-mortems
+- **Architecture:** Prioritize managed services, implement resilience patterns từ đầu
+- **Process:** Infrastructure as Code first approach, immutable deployments  
+- **Culture:** DevOps collaboration, continuous learning mindset
 
 ---
 
@@ -301,43 +301,43 @@ Hệ thống UIT-Go được thiết kế dựa trên nguyên tắc **"Scale or 
 
 ### 📊 **Tóm tắt Kết quả Đạt được**
 
-#### **🎯 Metrics sau khi áp dụng 3 Modules:**
-| Metric | Before | After | Module đóng góp |
-|--------|--------|-------|-----------------|
-| **Max Throughput** | 55 req/s | **1,250 req/s** | Module A (22x) |
-| **P95 Latency** | 2,300ms | **48ms** | Module A (47x) |
-| **System Availability** | 99.5% | **99.9%** | Module B (ROI 5,700%) |
-| **Deployment Time** | 2-3 ngày | **30 phút** | Module E (95% reduction) |
-| **Infrastructure Cost** | $357/tháng | **$240/tháng** | Module E (30% savings) |
+#### **🎯 Architectural Achievements theo 3 Modules:**
+| Aspect | Legacy System | Modern Architecture | Module đóng góp |
+|--------|---------------|-------------------|------------------|
+| **Scalability** | Monolithic bottlenecks | **Event-driven microservices** | Module A (Async patterns) |
+| **Response Time** | Synchronous blocking | **Non-blocking processing** | Module A (Queue decoupling) |
+| **Reliability** | Single points of failure | **Fault-tolerant design** | Module B (Multi-AZ strategy) |
+| **Deployment** | Manual, error-prone | **Automated CI/CD** | Module E (IaC pipelines) |
+| **Cost Efficiency** | Over-provisioned resources | **Right-sized infrastructure** | Module E (Cloud optimization) |
 
-#### **🏆 Tổng Business Impact:**
-- **Scalability Achievement:** Đạt mục tiêu 1,500+ req/s cho hyper-growth phase
-- **Reliability Improvement:** 99.9% uptime, RTO <30 phút cho disaster recovery
-- **Cost Optimization:** $11,000/tháng operational savings, ROI 302%
-- **Developer Productivity:** Self-service platform giảm 95% deployment time
+#### **🏆 Architectural Design Success:**
+- **Scalability Achievement:** Event-driven architecture support hyper-growth scenarios
+- **Reliability Improvement:** Multi-AZ deployment với automated failover mechanisms
+- **Cost Optimization:** Cloud-native patterns với resource optimization strategies
+- **Developer Productivity:** Self-service platform theo DevOps best practices
 
 ---
 
 ### 🚀 **Đề xuất Cải tiến Tương lai**
 
-#### **Phase 1: Tối ưu Architecture hiện tại (3-6 tháng)**
-- **Container Migration:** Chuyển từ EC2 sang EKS khi team scale >8 developers
-- **Advanced Monitoring:** Implement distributed tracing với Jaeger
-- **Security Enhancement:** Zero-trust networking và automated compliance
+#### **Phase 1: Architecture Maturation**
+- **Container Orchestration:** Evolution to container-native platforms
+- **Observability Enhancement:** Distributed tracing và monitoring strategies
+- **Security Hardening:** Zero-trust principles và compliance automation
 
 **Học phần liên quan:** SE104 (Software Engineering), SE113 (Distributed Systems)
 
-#### **Phase 2: Multi-Region Expansion (6-12 tháng)**
-- **Geographic Distribution:** Multi-AZ mở rộng thành multi-region
-- **Edge Computing:** CDN integration cho global latency optimization  
-- **Data Consistency:** Cross-region replication strategy
+#### **Phase 2: Geographic Distribution**
+- **Multi-Region Architecture:** Cross-region deployment patterns
+- **Edge Computing:** Content delivery và latency optimization  
+- **Data Consistency:** Distributed data management strategies
 
 **Học phần liên quan:** SE347 (Cloud Computing), SE358 (Big Data)
 
-#### **Phase 3: AI/ML Integration (12-18 tháng)**
-- **Intelligent Scaling:** ML-powered capacity planning
-- **Business Intelligence:** Real-time analytics cho demand prediction
-- **Automated Optimization:** AI-driven performance tuning
+#### **Phase 3: Intelligent Systems**
+- **Predictive Scaling:** Machine learning cho capacity management
+- **Analytics Integration:** Real-time data processing pipelines
+- **Optimization Automation:** AI-driven performance improvement
 
 ---
 
