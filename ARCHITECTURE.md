@@ -14,7 +14,7 @@ Hệ thống UIT-Go được xây dựng theo kiến trúc **Microservices Event
 
 ### 1.1. Sơ đồ Logic (Logical Architecture)
 
-> *(Chèn hình ảnh `Screenshot 2025-11-30 221200.png` tại đây)*
+![Architecture Diagram](Image/BASIC.png)
 
 #### **Mô tả luồng dữ liệu**
 **Giao thức giao tiếp:**
@@ -35,7 +35,7 @@ Hệ thống UIT-Go được xây dựng theo kiến trúc **Microservices Event
 
 ### 1.2. Sơ đồ Hạ tầng (Infrastructure Architecture)
 
-> *(Chèn hình ảnh `3d41f499-1361-4e18-971d-88130e2267da.jpg` tại đây)*
+![Architecture Diagram](Image/BASIC.png)
 
 #### **Mô tả hạ tầng**
 
