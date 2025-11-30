@@ -14,7 +14,7 @@ Hệ thống UIT-Go được xây dựng theo kiến trúc **Microservices Event
 
 ### 1.1. Sơ đồ Logic (Logical Architecture)
 
-![Architecture Diagram](Image/BASIC.png)
+![Architecture Diagram](Image/achitecture.jpg)
 
 #### **Mô tả luồng dữ liệu**
 **Giao thức giao tiếp:**
