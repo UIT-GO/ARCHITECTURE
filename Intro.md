@@ -30,22 +30,7 @@ Khi user tăng lên **1,000,000** sau chiến dịch:
 
 ➡️ *Nếu không nâng cấp kiến trúc → công ty phá sản.*
 
----
 
-## 3. Mục tiêu cho Đội Kỹ thuật (Module A Goals)
-
-CTO giao KPI cụ thể cho nhóm Kiến trúc (System Architects):
-
-### **1. Scalability**
-- Hệ thống phải chịu được: **10,000 Requests/giây (RPS)**
-- Không được phép downtime trong chiến dịch Marketing
-
-### **2. Cost Efficiency**
-- Giảm chi phí hạ tầng từ **$0.04 → $0.01 / đơn hàng**
-- Dù user tăng 20 lần, tiền cloud chỉ được tăng tối đa **5 lần**
-  → ~ **$10,000/tháng**
-
----
 
 
 
