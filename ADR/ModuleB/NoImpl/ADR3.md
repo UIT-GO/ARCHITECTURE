@@ -1,4 +1,4 @@
-# ADR 007: Cơ chế Idempotency Key cho Trip & Auth Service
+# ADR 003: Cơ chế Idempotency Key cho Trip & Auth Service
 
 ## Trạng thái (Status)
 **Accepted (Design Phase)**
